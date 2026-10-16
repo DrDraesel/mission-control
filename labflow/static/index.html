@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>LabFlow — local patient flow</title>
+<link rel="stylesheet" href="/static/styles.css">
+<script src="/static/labflow.js" defer></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="brand-mark" aria-hidden="true">LF</span>
+    <div>LABFLOW <span class="brand-sub">LOCAL PATIENT FLOW</span></div>
+  </div>
+  <div class="topbar-right">
+    <span class="local-badge">127.0.0.1 · data stays on this PC</span>
+    <span id="conn-pill" class="pill">connecting…</span>
+  </div>
+</header>
+
+<main class="layout">
+  <!-- ------------------------------------------------------------------ -->
+  <section class="card patients-col">
+    <div class="card-head">
+      <h2>Patients</h2>
+      <button id="new-patient-btn" class="btn primary" type="button">+ New patient</button>
+    </div>
+
+    <form id="new-patient-form" class="stack hidden" autocomplete="off">
+      <label for="np-name">Name *</label>
+      <input id="np-name" name="name" type="text" required maxlength="120">
+      <label for="np-dob">Date of birth</label>
+      <input id="np-dob" name="dob" type="date">
+      <label for="np-contact">Contact</label>
+      <input id="np-contact" name="contact" type="text" placeholder="phone / email">
+      <label for="np-history">Training history</label>
+      <textarea id="np-history" name="training_history" rows="2"></textarea>
+      <label for="np-flags">Medical flags</label>
+      <textarea id="np-flags" name="medical_flags" rows="2"
+        placeholder="injuries, red flags, contraindications"></textarea>
+      <label for="np-meds">Medications</label>
+      <textarea id="np-meds" name="medications" rows="2"></textarea>
+      <label for="np-goals">Goals</label>
+      <textarea id="np-goals" name="goals" rows="2"></textarea>
+      <div class="row">
+        <button class="btn primary" type="submit">Create patient</button>
+        <button id="np-cancel" class="btn" type="button">Cancel</button>
+      </div>
+      <p id="np-error" class="error hidden"></p>
+    </form>
+
+    <ul id="patients-list" class="list"></ul>
+    <p id="patients-empty" class="muted">No patients yet — create the first one.</p>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <section class="patient-col">
+    <div id="patient-empty" class="card muted">
+      Select a patient on the left, or create a new one to start the flow.
+    </div>
+
+    <div id="patient-view" class="hidden">
+      <div class="card patient-head">
+        <div class="patient-title">
+          <h2 id="pv-name"></h2>
+          <p id="pv-meta" class="muted"></p>
+        </div>
+        <div class="patient-actions">
+          <button id="refresh-btn" class="btn" type="button">Refresh</button>
+        </div>
+        <div class="progress-wrap" title="completed stations / total stations">
+          <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+          <span id="progress-text" class="muted"></span>
+        </div>
+      </div>
+
+      <div id="next-banner" class="card next-banner">
+        <p class="next-kicker">NEXT STEP</p>
+        <h2 id="next-name">—</h2>
+        <p id="next-desc" class="muted"></p>
+        <p id="next-instruction" class="next-instruction"></p>
+        <div id="next-launch" class="launch-row hidden"></div>
+        <p id="next-flow-done" class="hidden done-note">All stations are finished for this patient.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Stations</h2>
+          <span class="muted">workflow order</span>
+        </div>
+        <ol id="station-list" class="station-list"></ol>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Capture results</h2>
+          <span id="capture-for" class="muted"></span>
+        </div>
+        <form id="capture-form" class="stack" autocomplete="off">
+          <div id="capture-fields" class="field-grid"></div>
+          <label for="capture-notes">Notes</label>
+          <textarea id="capture-notes" rows="3" placeholder="free-text notes for this step"></textarea>
+          <div class="row">
+            <button id="capture-done" class="btn ok" type="submit">Done — save &amp; continue</button>
+            <button id="capture-skip" class="btn warn" type="button">Skip…</button>
+            <button id="capture-redo" class="btn" type="button">Redo step</button>
+          </div>
+          <p id="capture-hint" class="muted"></p>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>Lab results</h2>
+          <button id="probe-btn" class="btn" type="button">Check results</button>
+        </div>
+        <p class="muted">Read-only probes of Bertec (:8765), RunTrack (:8780) and NeuroSync recordings.</p>
+        <ul id="probe-list" class="probe-list"></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Measurements</h2></div>
+        <table class="measure-table">
+          <thead><tr><th>Metric</th><th>Value</th><th>Unit</th><th>Source</th><th>Recorded</th></tr></thead>
+          <tbody id="measure-body"></tbody>
+        </table>
+        <p id="measure-empty" class="muted">No measurements recorded yet.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="toast" class="toast hidden" role="status"></div>
+</body>
+</html>

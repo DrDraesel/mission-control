@@ -1,0 +1,9 @@
+{
+  "port": 8790,
+  "notify": {
+    "type": "console",
+    "bot_token_file": "",
+    "chat_id": "",
+    "include_patient_name": true
+  }
+}

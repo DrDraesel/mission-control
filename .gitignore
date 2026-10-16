@@ -1,0 +1,36 @@
+# local data & runtime state (never commit)
+labflow/data/
+labflow/config.json
+data/
+*.db
+
+# research raw evidence — only the daily .md reports are tracked
+research/**
+!research/daily/
+!research/daily/*.md
+
+# dev scratch / media artifacts
+sandbox/
+videos/
+content/
+labflow/verification/*.tmp
+
+# python
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# os / editor
+Thumbs.db
+.DS_Store
+*.swp
+
+# misc
+*.zip
+*.tar.gz
+*.mp4
+*.wav
+*.mov
+*.tmp

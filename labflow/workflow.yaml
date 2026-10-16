@@ -1,0 +1,225 @@
+{
+  "name": "Sports Performance Lab Baseline Assessment",
+  "version": "1.0",
+  "sort_rule": "longest_last",
+  "stations": [
+    {
+      "id": "intake",
+      "name": "Intake & Consent",
+      "app": "labflow",
+      "description": "Collect the intake form and signed consent before any measurement.",
+      "typical_minutes": 15,
+      "launch": {
+        "type": "manual",
+        "value": "tablet intake form"
+      },
+      "capture": {
+        "type": "manual",
+        "fields": [
+          "full_name",
+          "date_of_birth",
+          "contact",
+          "medical_history",
+          "medications",
+          "consent_signed"
+        ],
+        "probe": null
+      },
+      "requires": [],
+      "pinned": true,
+      "notes": "Provider reviews consent before vitals.",
+      "alert_text": "Hand the patient the intake form and confirm consent."
+    },
+    {
+      "id": "vitals",
+      "name": "Vitals (HR / Temp / SpO2)",
+      "app": "vitals",
+      "description": "Record resting heart rate, temperature and SpO2.",
+      "typical_minutes": 5,
+      "launch": {
+        "type": "manual",
+        "value": "vitals cart"
+      },
+      "capture": {
+        "type": "manual",
+        "fields": [
+          "heart_rate_bpm",
+          "temperature_c",
+          "spo2_pct"
+        ],
+        "probe": null
+      },
+      "requires": [],
+      "pinned": false,
+      "notes": "Seated rest for five minutes first.",
+      "alert_text": ""
+    },
+    {
+      "id": "hrv",
+      "name": "HRV",
+      "app": "hrv",
+      "description": "Capture a short resting HRV recording and enter the summary metrics.",
+      "typical_minutes": 5,
+      "launch": {
+        "type": "manual",
+        "value": "HRV capture app"
+      },
+      "capture": {
+        "type": "manual",
+        "fields": [
+          "rmssd_ms",
+          "sdnn_ms",
+          "mean_hr_bpm"
+        ],
+        "probe": null
+      },
+      "requires": [],
+      "pinned": false,
+      "notes": "Quiet room, no talking during capture.",
+      "alert_text": ""
+    },
+    {
+      "id": "inbody",
+      "name": "InBody Body Composition",
+      "app": "inbody",
+      "description": "Run the InBody scan and record weight / body composition.",
+      "typical_minutes": 10,
+      "launch": {
+        "type": "manual",
+        "value": "InBody device"
+      },
+      "capture": {
+        "type": "manual",
+        "fields": [
+          "weight_kg",
+          "skeletal_muscle_mass_kg",
+          "body_fat_pct",
+          "bmi"
+        ],
+        "probe": null
+      },
+      "requires": [],
+      "pinned": false,
+      "notes": "Light clothing; fasted if possible.",
+      "alert_text": ""
+    },
+    {
+      "id": "blood_panels",
+      "name": "Blood Panels (external reference)",
+      "app": "external_lab",
+      "description": "Note the external blood panel draw and keep the lab reference id for the record.",
+      "typical_minutes": 10,
+      "launch": {
+        "type": "manual",
+        "value": "external lab draw"
+      },
+      "capture": {
+        "type": "ref",
+        "fields": [
+          "panel",
+          "lab",
+          "reference_id"
+        ],
+        "probe": null
+      },
+      "requires": [],
+      "pinned": false,
+      "notes": "Reference only: results arrive from the partner lab.",
+      "alert_text": ""
+    },
+    {
+      "id": "squats_strength",
+      "name": "Squats & Strength",
+      "app": "strength",
+      "description": "Run the squat / strength battery and record loads and reps.",
+      "typical_minutes": 15,
+      "launch": {
+        "type": "manual",
+        "value": "strength rack"
+      },
+      "capture": {
+        "type": "manual",
+        "fields": [
+          "exercise",
+          "load_kg",
+          "sets",
+          "reps",
+          "rpe"
+        ],
+        "probe": null
+      },
+      "requires": [],
+      "pinned": false,
+      "notes": "Warm-up sets before working sets.",
+      "alert_text": ""
+    },
+    {
+      "id": "eeg_baseline",
+      "name": "EEG Baseline",
+      "app": "neurosync",
+      "description": "Launch NeuroSync and record the resting-state EEG baseline.",
+      "typical_minutes": 20,
+      "launch": {
+        "type": "command",
+        "value": "neurosync record"
+      },
+      "capture": {
+        "type": "auto",
+        "fields": [
+          "recording_id"
+        ],
+        "probe": "neurosync recordings"
+      },
+      "requires": [],
+      "pinned": false,
+      "notes": "Eyes-closed resting-state baseline.",
+      "alert_text": ""
+    },
+    {
+      "id": "balance",
+      "name": "Balance Battery",
+      "app": "bertec",
+      "description": "Run the Bertec balance protocol battery and keep the session id.",
+      "typical_minutes": 25,
+      "launch": {
+        "type": "url",
+        "value": "http://127.0.0.1:8765"
+      },
+      "capture": {
+        "type": "auto",
+        "fields": [
+          "session_id",
+          "protocol"
+        ],
+        "probe": "bertec protocol sessions"
+      },
+      "requires": [],
+      "pinned": false,
+      "notes": "Barefoot with the safety harness on.",
+      "alert_text": ""
+    },
+    {
+      "id": "treadmill_form",
+      "name": "Treadmill Running Form",
+      "app": "runtrack",
+      "description": "Run the treadmill running-form session and keep the RunTrack session id.",
+      "typical_minutes": 30,
+      "launch": {
+        "type": "url",
+        "value": "http://127.0.0.1:8780"
+      },
+      "capture": {
+        "type": "auto",
+        "fields": [
+          "session_id",
+          "metrics"
+        ],
+        "probe": "runtrack sessions"
+      },
+      "requires": [],
+      "pinned": false,
+      "notes": "Longest test last; cool-down included.",
+      "alert_text": ""
+    }
+  ]
+}

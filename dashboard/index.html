@@ -1,0 +1,171 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Mission Control</title>
+<style>
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    background: #08090a;
+    color: #e6e6e6;
+  }
+  header {
+    padding: 24px;
+    background: #0e0f12;
+    border-bottom: 1px solid #1f2329;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+    color: #f5f5f5;
+  }
+  header .chips {
+    display: flex;
+    gap: 8px;
+  }
+  .chip {
+    background: #161a21;
+    color: #c9d1d9;
+    border: 1px solid #272d37;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+  .chip.active {
+    background: #24292f;
+    color: #f0f6fc;
+    border-color: #3b4550;
+  }
+  main {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 980px) {
+    main { grid-template-columns: 1fr; }
+  }
+  .card {
+    background: #0e0f12;
+    border: 1px solid #1f2329;
+    border-radius: 12px;
+    padding: 16px;
+    min-height: 180px;
+  }
+  .card h2 {
+    margin-top: 0;
+    font-size: 14px;
+    color: #d0d7de;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .pill {
+    background: #0b0d12;
+    color: #d8dee4;
+    border: 1px solid #232a33;
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  .report {
+    background: #0c0e12;
+    border: 1px solid #1a1f28;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+  .report a {
+    color: #79c0ff;
+    text-decoration: none;
+    font-size: 13px;
+  }
+  .report a:hover { text-decoration: underline; }
+  footer {
+    padding: 16px 24px;
+    color: #8b98a5;
+    font-size: 12px;
+  }
+  button.primary {
+    background: #2ea043;
+    border: none;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>🚀 Mission Control</h1>
+  <div class="chips">
+    <span class="chip active">aidynamic.pro</span>
+    <span class="chip">305business.llc</span>
+    <span class="chip">CTO</span>
+    <span class="chip">Marketer</span>
+    <span class="chip">Designer</span>
+  </div>
+</header>
+<main>
+  <section class="card">
+    <h2>🎯 Objective</h2>
+    <p>Build an end-to-end open-source content engine for <strong>aidynamic.pro</strong> and <strong>305business.llc</strong>. Produce faceless, platform-ready promotional videos, motion graphics, and advertising assets using local-first, maintainable tools.</p>
+  </section>
+  <section class="card">
+    <h2>🧰 Stack</h2>
+    <ul>
+      <li>FFmpeg / MoviePy pipeline</li>
+      <li>GTA-style local TTS for voiceover</li>
+      <li>Pillow + MoviePy frame compositing</li>
+      <li>Node + TypeScript dashboards</li>
+      <li>Ollama vision models</li>
+    </ul>
+  </section>
+  <section class="card">
+    <h2>🧪 Status</h2>
+    <div class="report">Render engine: <strong>MoviePy + Pillow</strong></div>
+    <div class="report">FFmpeg: <strong>bundled</strong></div>
+    <div class="report">Videos done: <strong>1 / 3</strong></div>
+    <div class="report">Go: <strong>pending installer</strong></div>
+    <div class="report">Node: <strong>v26.3.0 installed</strong></div>
+  </section>
+  <section class="card" style="grid-column: 1 / -1;">
+    <h2>📅 Weekly Content Brief</h2>
+    <div class="pill-row">
+      <span class="pill">aidynamic.pro — Free Consultation Value Prop</span>
+      <span class="pill">305business.llc — Miami Local Differentiator</span>
+      <span class="pill">Cyberpunk Test — RTX 5070 Ti Showcase</span>
+    </div>
+    <p>Each brief includes: hook, script, visual treatment, export settings, caption, hashtags, and CTAs.</p>
+  </section>
+  <section class="card">
+    <h2>🧭 Repos Under Review</h2>
+    <div class="report"><a href="https://github.com/search?q=faceless+video+generation&type=repositories" target="_blank">faceless video generation</a></div>
+    <div class="report"><a href="https://github.com/search?q=moviepy+keras&type=repositories" target="_blank">moviepy keras</a></div>
+    <div class="report"><a href="https://github.com/search?q=local+video+generation&type=repositories" target="_blank">local video generation</a></div>
+    <div class="report"><a href="https://github.com/search?q=ai+video+automation&type=repositories" target="_blank">ai video automation</a></div>
+    <div class="report"><a href="https://github.com/search?q=motion+graphics&type=repositories" target="_blank">motion graphics</a></div>
+  </section>
+  <section class="card">
+    <h2>💡 Notes</h2>
+    <div class="report">Installer script for pnpm, Go, and Node verify status every run.</div>
+    <div class="report">Cyberpunk test renders with 10 fx are in validation.</div>
+    <div class="report">Sample 5s clips are verified and inspected.</div>
+  </section>
+</main>
+<footer>Mission control is online. Auto-research loop enabled.</footer>
+</body>
+</html>
