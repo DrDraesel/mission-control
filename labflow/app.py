@@ -342,6 +342,15 @@ def create_app(config=None, store=None, workflow=None, notifier=None, engine=Non
     def index():
         return FileResponse(str(static_root / "index.html"))
 
+    @app.get("/mirror")
+    def mirror():
+        """Portrait station display for the Circolo mirror (1080x1920).
+
+        Read-only: it polls the same JSON API as the main UI, so the mirror
+        never mutates a patient — the front desk stays the only writer.
+        """
+        return FileResponse(str(static_root / "mirror.html"))
+
     # -- patients ----------------------------------------------------------
     @app.get("/api/patients")
     def list_patients():

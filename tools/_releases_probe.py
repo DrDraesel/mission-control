@@ -3,6 +3,11 @@ import requests, time
 
 HEADERS = {"User-Agent": "mission-control-research/1.0", "Accept": "application/vnd.github+json"}
 REPOS = [
+    "DonkeyCut/Donkey",
+    "ter-9001/WannaCut",
+    "OpenCut-app/OpenCut",
+    "aqm857886159/Nomi",
+    "lemomo-ai/lemo-opuscar",
     "storytold/wordcraft",
     "storytold/soundcraft",
     "storytold/deckcraft",

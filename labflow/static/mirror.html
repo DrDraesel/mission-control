@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>LabFlow — Mirror Station</title>
+<style>
+  /* Portrait kiosk display for the Circolo mirror (1080x1920).
+     Read from 2-3 m: nothing below 26px, key lines 60-140px. */
+  :root{
+    --bg:#0b0e12; --panel:#141a21; --border:#243040;
+    --text:#eef3f8; --muted:#8a97a5; --accent:#2563eb; --accent-2:#9fd3ff;
+    --ok:#4ade80; --warn:#ffd479; --danger:#ff8f8f;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--text);
+    font-family:system-ui,"Segoe UI",Roboto,sans-serif}
+  body{display:flex;flex-direction:column;padding:38px 34px 30px;gap:22px}
+
+  header{display:flex;align-items:baseline;justify-content:space-between;gap:16px}
+  .brand{font-size:27px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .brand b{color:var(--accent-2)}
+  .clock{font-size:27px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+  .patient{font-size:74px;line-height:1.05;font-weight:800;letter-spacing:-.02em;word-break:break-word}
+  .sub{font-size:26px;color:var(--muted);margin-top:8px}
+
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:26px;padding:32px 30px}
+  .label{font-size:24px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:700}
+
+  .now .step{font-size:64px;font-weight:800;line-height:1.08;margin-top:14px;letter-spacing:-.01em}
+  .now .meta{display:flex;gap:18px;align-items:center;margin-top:18px;flex-wrap:wrap}
+  .chip{font-size:26px;padding:9px 18px;border-radius:999px;border:1px solid var(--border);
+    color:var(--accent-2);background:#101a2b}
+  .chip.warn{color:var(--warn);border-color:#4a3f22;background:#1d1a10}
+
+  .next .step{font-size:44px;font-weight:700;margin-top:12px;color:var(--text);opacity:.95}
+
+  .bar{height:18px;border-radius:999px;background:#0a121b;border:1px solid var(--border);overflow:hidden;margin-top:6px}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0;transition:width .5s}
+  .progress-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+  .progress-top span:last-child{font-size:30px;font-variant-numeric:tabular-nums;color:var(--text)}
+
+  .done{border-color:#2b5c3c;background:#0f1d15}
+  .done .step{color:var(--ok)}
+
+  footer{margin-top:auto;display:flex;justify-content:space-between;align-items:center;
+    font-size:23px;color:var(--muted)}
+  .dot{display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--ok);margin-right:10px;vertical-align:middle}
+  .dot.bad{background:var(--danger)}
+
+  .idle{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:22px}
+  .idle h1{font-size:58px;margin:0;font-weight:800}
+  .idle p{font-size:28px;color:var(--muted);margin:0;max-width:760px}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Lab<b>Flow</b> · Mirror</div>
+  <div class="clock" id="clock">--:--</div>
+</header>
+<div id="root"></div>
+<footer>
+  <div><span class="dot" id="dot"></span><span id="status">connecting</span></div>
+  <div id="updated"></div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  const REFRESH_MS = 4000;
+  const params = new URLSearchParams(location.search);
+  const fixedId = params.get("patient");
+  let lastGood = null;
+
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => (
+    {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+  function tick(){
+    const d = new Date();
+    $("clock").textContent = d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+  }
+
+  function setStatus(ok, text){
+    $("dot").className = "dot" + (ok ? "" : " bad");
+    $("status").textContent = text;
+  }
+
+  function activeFrom(list){
+    // Focus = the open patient furthest along; ties broken by newest check-in.
+    // (Patient JSON has no updated_at — the store derives it from step times,
+    // so the API only exposes progress + created_at here.)
+    const open = (list || []).filter(p => p.status !== "complete");
+    const pool = open.length ? open : (list || []);
+    if (!pool.length) return null;
+    return pool.sort((a, b) => {
+      const pa = (a.progress && a.progress.pct) || 0;
+      const pb = (b.progress && b.progress.pct) || 0;
+      if (pb !== pa) return pb - pa;
+      return (Date.parse(b.created_at || 0) || 0) - (Date.parse(a.created_at || 0) || 0);
+    })[0];
+  }
+
+  function renderIdle(msg){
+    $("root").innerHTML =
+      '<div class="idle"><h1>LabFlow</h1><p>' + esc(msg) + '</p></div>';
+  }
+
+  function render(view){
+    const patient = view.patient || {};
+    const cur = view.current;
+    const steps = view.steps || [];
+    const prog = view.progress || {};
+    const pct = prog.pct || 0;
+    const name = patient.name || "Unnamed";
+
+    let html = '';
+    html += '<div><div class="patient">' + esc(name) + '</div>';
+    if (patient.dob || patient.contact){
+      html += '<div class="sub">' + esc([patient.dob, patient.contact].filter(Boolean).join(" · ")) + '</div>';
+    }
+    html += '</div>';
+
+    if (cur){
+      const state = cur.state === "in_progress" ? '<span class="chip warn">in progress</span>' : '';
+      html += '<div class="card now"><div class="label">Now</div>' +
+              '<div class="step">' + esc(cur.name || cur.id) + '</div>' +
+              '<div class="meta">' +
+                (cur.minutes_text ? '<span class="chip">' + esc(cur.minutes_text) + '</span>' : '') +
+                state +
+              '</div></div>';
+      // next pending station after the current one in the ordered list
+      const idx = steps.findIndex(s => s.id === cur.id);
+      const afters = idx >= 0 ? steps.slice(idx + 1) : steps;
+      const upcoming = afters.find(s => s.state !== "done" && s.state !== "skipped" && s.id !== cur.id);
+      if (upcoming){
+        html += '<div class="card next"><div class="label">Next</div>' +
+                '<div class="step">' + esc(upcoming.name) + '</div></div>';
+      }
+    } else {
+      html += '<div class="card now done"><div class="label">Now</div>' +
+              '<div class="step">All steps complete</div></div>';
+    }
+
+    html += '<div class="card"><div class="progress-top"><span class="label">Progress</span>' +
+            '<span>' + pct + '% · ' + (prog.done || 0) + '/' + (prog.total || steps.length) + '</span></div>' +
+            '<div class="bar"><i style="width:' + pct + '%"></i></div></div>';
+
+    $("root").innerHTML = html;
+  }
+
+  async function pull(){
+    try{
+      let id = fixedId;
+      if (!id){
+        const res = await fetch("/api/patients", {cache:"no-store"});
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const body = await res.json();
+        const pick = activeFrom(body.patients);
+        if (!pick){ renderIdle("No patient checked in."); setStatus(true, "idle"); return; }
+        id = pick.id;
+      }
+      const res2 = await fetch("/api/patients/" + encodeURIComponent(id), {cache:"no-store"});
+      if (!res2.ok) throw new Error("HTTP " + res2.status);
+      const view = await res2.json();
+      lastGood = view;
+      render(view);
+      setStatus(true, "live");
+      $("updated").textContent = "updated " + new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit", second:"2-digit"});
+    }catch(err){
+      if (lastGood){ render(lastGood); }
+      else { renderIdle("Waiting for LabFlow…"); }
+      setStatus(false, "offline — retrying");
+    }
+  }
+
+  tick();
+  setInterval(tick, 15000);
+  pull();
+  setInterval(pull, REFRESH_MS);
+})();
+</script>
+</body>
+</html>

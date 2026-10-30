@@ -11,36 +11,28 @@ today = date.today().isoformat()
 HEADERS = {"User-Agent": "mission-control-research/1.0", "Accept": "application/vnd.github+json"}
 
 REPOS = [
-    # --- 10-13 new finds (sweep) ---
-    "honwee/mynah",
-    "BlessEphraem/Premiere-Companion",
-    "Jemand-coder/GlassStudio",
-    "respectfulnrespected59-source/qmm-autoedit",
-    # --- 10-13 web finds ---
-    "hypit-ai/hypit",
-    # --- 10-13 ArtCraft suite expansion (new apps) ---
-    "storytold/wordcraft",
-    "storytold/soundcraft",
-    "storytold/deckcraft",
-    "storytold/cadcraft",
-    "storytold/gridcraft",
-    "storytold/figcraft",
-    # --- ArtCraft momentum ---
-    "storytold/filmcraft",
-    "storytold/effectcraft",
-    # --- momentum / status refresh ---
-    "academa-labs/manimgx",
+    # --- 10-29 sweep NEW (category-probe debut: image-editor / whiteboard / graphics-engine / animation-software) ---
+    "toeverything/AFFiNE",
+    "tldraw/tldraw",
+    "plait-board/drawnix",
+    "Agents365-ai/drawio-skill",
+    "geeklee/srt-whiteboard-animation",
+    "CyberTimon/RapidRAW",
+    "Orama-Interactive/Pixelorama",
+    "Orillusion/orillusion",
+    "leaferjs/leafer-ui",
+    "NomaDamas/CozyClay",
+    "tahoma2d/tahoma2d",
+    "MaurycyLiebner/enve",
+    "photopea/photopea",
+    "ikuaitu/vue-fabric-editor",
+    # --- 10-29 momentum refresh ---
     "heygen-com/hyperframes",
-    "liyupi/ai-promo-video-maker",
-    "glanderness/BeefTV",
-    "feitangyuan/onetake",
-    "FavioVazquez/showtime",
-    "vincentsch/explainroo",
-    "kandinskylab/kandinsky-6",
-    "Lightricks/LTX-Desktop",
-    "KyaniteLabs/kinocut",
-    "nexu-io/open-design",
-    "opencut-app/OpenCut",
+    "jub0t/Concat",
+    "pbakaus/impeccable",
+    "tt-a1i/archify",
+    "calesthio/OpenMontage",
+    "Leonxlnx/taste-skill",
 ]
 
 meta = {}

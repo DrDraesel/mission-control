@@ -26,6 +26,29 @@ HEADERS = {
 }
 
 # (slug, github search query)
+# ROTATION 2026-10-23 (applied per 10-22 plan): canva-alt RETIRED — 'canva
+# alternative stars:>100' returned only 5 results (too narrow to be a lane);
+# replaced by brand-kit ('brand kit generator') to probe the brand-asset lane
+# (logos/palettes/brand systems → social templates). Kept ai-video-editor-movers
+# (proved a pattern: >200* tier is macOS-native/stale/SDK, not a lane, but the
+# movers filter keeps it cheap).
+# ROTATION 2026-10-22 (applied per 10-21 plan): topic lane saturated (26 of 27
+# queries returned 0 new on 10-21), so both additions are category-name /
+# movers-only probes rather than more vocabulary: ADDED canva-alt
+# ('canva alternative stars:>100' — design category name, the figma-alt query
+# was the only yielder on 10-21) and ai-video-editor-movers ('ai video editor
+# stars:>200' — restrict a noisy lane to actual movers). Keep everything else.
+# ROTATION 2026-10-18 (applied per 10-17 plan): moviepy REPHRASED -> 'moviepy
+# automation' (query flat since 10-05, but the moviepy lane is in the cron
+# mandate — try automation vocab before retiring); ADDED code-rendered-film
+# ('agent film skill') to chase the lemo-opuscar/anidoodle lane that was
+# invisible to all 25 queries on 10-17 (probe 10-18: total=147, 8 fresh
+# agent-film skills incl. motionmaxxing 857*, procedural-film 512*).
+# Kept capcut-alt. kandinsky-s2v = 3rd recheck due (done manually in report).
+# ROTATION 2026-10-17 (applied per 10-16 plan): fresh-faceless-yt retired
+# ('faceless youtube automation' = total=0 dead phrasing x2) -> ADDED
+# capcut-alt ('capcut alternative'); compositing revisited (last 10-03) on the
+# Concat/OpenCut CapCut-replacement wave; background-removal already in the pool.
 # ROTATION 2026-10-16 (applied per 10-15 plan): retired viral-clone (0 new on
 # 2nd of 2 runs); replaced fresh-motion (stale x2) with a fresh window on
 # 'faceless youtube automation' (new vocabulary for the faceless lane).
@@ -62,28 +85,38 @@ TOPIC_QUERIES = [
     ("agent-video-editing", "claude code video editing"),
     ("ai-video-editing-agent", "ai video editing agent"),
     ("video-editing-model", "video editing model"),
-    ("faceless-video-gen", "faceless video generator"),
-    ("video-diffusion-model", "video diffusion model stars:>500 pushed:>2026-06-01"),
     ("ai-video-marketing", "ai video marketing"),
     ("motion-graphics", "motion graphics"),
     ("video-automation", "video automation"),
     ("typography-animation", "typography animation"),
     ("video-editor-oss", "open source video editor"),
     ("short-drama", "ai short drama"),
-    ("moviepy", "moviepy"),
+    ("programmatic-video", "programmatic video"),
+    ("code-rendered-film", "agent film skill"),
+    ("figma-alt", "figma alternative"),
+    ("ugc-video", "ai ugc video"),
     ("reels-automation", "instagram reels automation"),
     ("3d-web-design", "3d web design"),
     ("local-video-gen", "local video generation"),
     ("clip-factory", "video clip generator"),
     ("digital-human", "digital human avatar"),
     ("social-publishing", "social media publishing"),
-    ("background-removal", "background removal"),
+    ("capcut-alt", "capcut alternative"),
+    # 10-30 rotation: 7 mapped/mined probes out -> star-floored category NAMES + tail bands in
+    ("lottie-motion", "lottie stars:>500"),
+    ("blender-addons", "blender addon stars:>300"),
+    ("mocap", "motion capture stars:>500"),
+    ("voice-cloning", "voice cloning stars:>1000"),
+    ("music-generation", "music generation stars:>500"),
+    ("screen-capture", "screen capture stars:>1000"),
+    ("social-scheduler", "social media scheduler stars:>1000"),
+    ("image-editor-tail", "image editor stars:200..1000"),
+    ("photo-editor", "photo editor stars:>2000"),
 ]
 
 # freshness: brand-new projects getting traction (rotated windows)
 FRESH_QUERIES = [
     ("fresh-video-gen", 'video generation created:>2026-09-01 stars:>15'),
-    ("fresh-faceless-yt", 'faceless youtube automation created:>2026-08-25 stars:>10'),
     ("fresh-agents", 'video agent created:>2026-08-25 stars:>10'),
     ("manim-ecology", 'manim stars:>50 pushed:>2026-09-01'),
 ]

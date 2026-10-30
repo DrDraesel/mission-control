@@ -114,6 +114,15 @@ class StaticTests(WebLayerTestCase):
         self.assertEqual(css.status_code, 200)
         self.assertIn(".next-banner", css.text)
 
+    def test_mirror_serves_the_portrait_station_display(self):
+        response = self.client.get("/mirror")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Mirror Station", response.text)
+        self.assertIn("/api/patients", response.text)
+        # read-only display: it must never POST back into the flow
+        self.assertNotIn("POST", response.text)
+        self.assertNotIn("method:\"POST\"", response.text)
+
 
 class WorkflowEndpointTests(WebLayerTestCase):
     def test_workflow_endpoint_order_matches_longest_last(self):
