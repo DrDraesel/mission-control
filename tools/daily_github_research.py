@@ -106,12 +106,13 @@ TOPIC_QUERIES = [
     ("lottie-motion", "lottie stars:>500"),
     ("blender-addons", "blender addon stars:>300"),
     ("mocap", "motion capture stars:>500"),
-    ("voice-cloning", "voice cloning stars:>1000"),
     ("music-generation", "music generation stars:>500"),
     ("screen-capture", "screen capture stars:>1000"),
     ("social-scheduler", "social media scheduler stars:>1000"),
-    ("image-editor-tail", "image editor stars:200..1000"),
     ("photo-editor", "photo editor stars:>2000"),
+    # 10-31 rotation: retire voice-cloning (0/30) + image-editor-tail (tail = pure noise)
+    ("vector-graphics", "vector graphics stars:>1000"),
+    ("compositor", "compositor stars:>500"),
 ]
 
 # freshness: brand-new projects getting traction (rotated windows)
