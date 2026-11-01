@@ -111,13 +111,18 @@ TOPIC_QUERIES = [
     ("social-scheduler", "social media scheduler stars:>1000"),
     ("photo-editor", "photo editor stars:>2000"),
     # 10-31 rotation: retire voice-cloning (0/30) + image-editor-tail (tail = pure noise)
-    ("vector-graphics", "vector graphics stars:>1000"),
-    ("compositor", "compositor stars:>500"),
+    ("vector-graphics", "vector graphics stars:>1000 pushed:>2026-06-01"),
+    # 11-01 rotation: retire compositor (bare word = Wayland window managers);
+    # new star-floored category NAMES only (proven the only yielding query type)
+    ("storyboard", "storyboard stars:>200"),
+    ("color-grading", "color grading stars:>300"),
+    ("font-editor", "font editor stars:>300"),
 ]
 
 # freshness: brand-new projects getting traction (rotated windows)
 FRESH_QUERIES = [
-    ("fresh-video-gen", 'video generation created:>2026-09-01 stars:>15'),
+    # 11-01: H3/Pika wave is a licence dead end for the US -> re-target LTX vocabulary
+    ("fresh-ltx", 'ltx created:>2026-08-01 stars:>5'),
     ("fresh-agents", 'video agent created:>2026-08-25 stars:>10'),
     ("manim-ecology", 'manim stars:>50 pushed:>2026-09-01'),
 ]
