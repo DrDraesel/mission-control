@@ -49,13 +49,17 @@ outbound paths listed at the bottom.
 
 ## Intake Kiosk → Mission Control
 
-- The kiosk today keeps everything **in browser memory** and stores nothing. Its Vercel demo is a
-  synthetic-data prototype; do not type real patient answers into it.
-- Local wiring (the only PHI-safe path): run the kiosk on the clinic PC (`npm run dev`,
-  `http://127.0.0.1:5173`) and point it at LabFlow on loopback. A completed intake becomes a
-  LabFlow patient via `POST /api/patients`; nothing leaves the machine.
-- Until that endpoint is wired, intake is entered in LabFlow's own form — the kiosk is a UI prototype,
-  not a record system.
+- The kiosk keeps everything **in browser memory** and stores nothing itself. On **Review & finish**
+  it POSTs the completed check-in to `http://127.0.0.1:8790/api/intake` (override with `VITE_MC_URL`).
+- LabFlow maps it to a patient (`name`, `dob`, `phone`) and keeps the structured fields, the original
+  transcript, locale and the attention flag in `patient.intake`. A retried delivery with the same
+  submission id returns the **same** patient — no duplicates.
+- CORS is open only for `http://127.0.0.1:5173` and `http://localhost:5173`; any other origin is refused.
+- Run the kiosk locally (`npm run dev`) on the clinic PC. Do **not** use the public Vercel demo with
+  real answers — it has no clinic endpoint and its data is synthetic by design.
+- If delivery fails the kiosk shows **"NOT delivered"** in the staff view: the answers then exist only
+  in that browser tab.
+
 
 ## Contracts (what each side actually promises)
 

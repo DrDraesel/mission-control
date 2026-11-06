@@ -203,6 +203,20 @@ def create_app(config=None, store=None, workflow=None, notifier=None, engine=Non
 
     app = FastAPI(title="LabFlow", version="1.0.0", docs_url="/docs", redoc_url=None)
 
+    # -- intake kiosk (local dev server only) ------------------------------
+    # The kiosk runs on Vite's loopback dev server and POSTs a completed
+    # check-in to /api/intake.  Only the two loopback origins are allowed;
+    # no wildcard, nothing else on the machine can post patient data.
+    from fastapi.middleware.cors import CORSMiddleware
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["http://127.0.0.1:5173", "http://localhost:5173"],
+        allow_methods=["GET", "POST", "OPTIONS"],
+        allow_headers=["Content-Type"],
+        max_age=600,
+    )
+
     # -- error rendering -------------------------------------------------
     @app.exception_handler(ApiError)
     async def _api_error(_request: Request, exc: ApiError):
@@ -401,6 +415,72 @@ def create_app(config=None, store=None, workflow=None, notifier=None, engine=Non
                 "progress": engine.progress(patient),
             })
         return {"ok": True, "patients": patients}
+
+    @app.post("/api/intake")
+    def create_from_intake_kiosk(payload: dict = Body(default={})):
+        """Create a patient from an intake-kiosk submission.
+
+        The kiosk (DrDraesel/Intakekiosk) keeps nothing; it POSTs one completed
+        check-in here.  The payload carries the kiosk's own submission id, so a
+        retried delivery returns the same patient instead of duplicating it.
+        """
+        payload = payload if isinstance(payload, dict) else {}
+        raw_patient = payload.get("patient")
+        patient_block: dict = raw_patient if isinstance(raw_patient, dict) else {}
+        name = str(patient_block.get("name") or payload.get("name") or "").strip()
+        if not name:
+            raise ApiError(400, "name is required")
+        if len(name) > MAX_NAME_LENGTH:
+            raise ApiError(400, f"name must be {MAX_NAME_LENGTH} characters or fewer")
+
+        submission_id = str(payload.get("id") or "").strip()[:80]
+        if submission_id:
+            for existing in store.list():
+                intake = existing.get("intake") if isinstance(existing.get("intake"), dict) else {}
+                if str(intake.get("kiosk_submission_id") or "") == submission_id:
+                    return {
+                        "ok": True,
+                        "deduped": True,
+                        "patient": existing,
+                        "progress": engine.progress(existing),
+                    }
+
+        raw_fields = payload.get("fields")
+        fields: dict = raw_fields if isinstance(raw_fields, dict) else {}
+        raw_transcript = payload.get("transcript")
+        transcript: list = raw_transcript if isinstance(raw_transcript, list) else []
+        intake = {
+            "kiosk_submission_id": submission_id,
+            "source": "intake_kiosk",
+            "locale": str(payload.get("locale") or "")[:16],
+            "category": str(payload.get("category") or "")[:80],
+            "attention": bool(payload.get("attention")),
+            "submitted_at": str(payload.get("submittedAt") or "")[:40],
+            "fields": dict(list(fields.items())[:120]),
+            "transcript": [
+                {
+                    "original": str(item.get("original") or "")[:2000],
+                    "timestamp": str(item.get("timestamp") or "")[:40],
+                    "source": str(item.get("source") or "")[:40],
+                    "questionId": str(item.get("questionId") or "")[:60],
+                }
+                for item in transcript[:200]
+                if isinstance(item, dict)
+            ],
+            "insurance": str(patient_block.get("insurance") or "")[:120],
+            "member_id": str(patient_block.get("memberId") or "")[:80],
+            "email": str(patient_block.get("email") or "")[:160],
+            "address": str(patient_block.get("address") or "")[:300],
+        }
+        contact = str(patient_block.get("phone") or patient_block.get("email") or "").strip()
+        patient = store.create(
+            name,
+            intake=intake,
+            dob=str(patient_block.get("dob") or "").strip() or None,
+            contact=contact[:160] or None,
+        )
+        patient = _retry_windows_lock(engine.start_patient, patient["id"]) or patient
+        return {"ok": True, "deduped": False, "patient": patient, "progress": engine.progress(patient)}
 
     @app.post("/api/patients")
     def create_patient(payload: dict = Body(default={})):
