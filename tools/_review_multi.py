@@ -13,7 +13,7 @@ today = date.today().isoformat()
 
 files = [Path(a) for a in sys.argv[1:]] or [D / f"{today}-github.json"]
 ledger = json.loads((D / "seen-repos.json").read_text(encoding="utf-8"))
-seen = set(ledger["repos"].keys())
+seen = {k.lower() for k in ledger["repos"].keys()}  # case-insensitive (renames can change case only)
 
 union = {}
 for f in files:
@@ -36,7 +36,7 @@ for f in files:
                 cur["slugs"].append(slug)
     print(f"loaded {f.name}: +{len(union) - n0} unique repos (union {len(union)})")
 
-new = [it for it in union.values() if it["full_name"] not in seen]
+new = [it for it in union.values() if it["full_name"].lower() not in seen]
 SPAM = ("dictat", "dictatorship", "cirosantilli", "setup-guide", "win-guide", "workflow-guide", "shotcut-download")
 new = [it for it in new if not any(s in it["full_name"].lower() for s in SPAM)]
 new.sort(key=lambda x: -(x["stars"] or 0))

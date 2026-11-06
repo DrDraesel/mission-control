@@ -9,7 +9,8 @@ D = Path(r"C:\Users\GAMEPOWER\projects\mission-control\research\daily")
 today = date.today().isoformat()
 raw = json.loads((D / f"{today}-github.json").read_text(encoding="utf-8"))
 ledger = json.loads((D / "seen-repos.json").read_text(encoding="utf-8"))
-seen = set(ledger["repos"].keys())
+# case-insensitive: GitHub renames can change case only (jub0t/concat -> jub0t/Concat)
+seen = {k.lower(): k for k in ledger["repos"].keys()}
 
 SPAM = ("dictat", "dictatorship", "cirosantilli", "setup-guide", "win-guide", "workflow-guide", "shotcut-download")
 
@@ -19,8 +20,8 @@ for slug, q in raw["queries"].items():
     for it in q["items"]:
         name = it["full_name"]
         is_spam = any(s in name.lower() for s in SPAM)
-        tag = "OLD" if name in seen else ("SPAM" if is_spam else "NEW")
-        if name not in seen and not is_spam:
+        tag = "OLD" if name.lower() in seen else ("SPAM" if is_spam else "NEW")
+        if name.lower() not in seen and not is_spam:
             e = new.setdefault(name, dict(it))
             e.setdefault("slugs", [])
             if slug not in e["slugs"]:

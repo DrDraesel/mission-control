@@ -112,11 +112,20 @@ TOPIC_QUERIES = [
     ("photo-editor", "photo editor stars:>2000"),
     # 10-31 rotation: retire voice-cloning (0/30) + image-editor-tail (tail = pure noise)
     ("vector-graphics", "vector graphics stars:>1000 pushed:>2026-06-01"),
-    # 11-01 rotation: retire compositor (bare word = Wayland window managers);
-    # new star-floored category NAMES only (proven the only yielding query type)
-    ("storyboard", "storyboard stars:>200"),
-    ("color-grading", "color grading stars:>300"),
-    ("font-editor", "font editor stars:>300"),
+    # 11-02 rotation: retire storyboard/color-grading/font-editor (all mined 11-01);
+    # the alpha/matte lane is the live edge and `video compositor` is the unambiguous
+    # spelling of the 10-31 Wayland collision
+    ("matting", "matting stars:>200"),
+    # 11-04 rotation: retire rotoscoping (3 results, both stale/unclear);
+    # add two adjacent craft names for the VO-cleanup + scripting halves of the pipeline
+    ("audio-editor", "audio editor stars:>500"),
+    # 11-05 rotation: retire speech-enhance + screenwriting (both mined in one run 11-04);
+    # audio-editor kept one more run. Two fresh craft names with star floors.
+    # 11-06: keyframe-animation = iOS Obj-C name collision -> retired after one run.
+    #       speech-to-text kept (only 10 of 50 mined). New craft name: image upscaling
+    #       (Real-ESRGAN/upscayl/chaiNNer cluster = the 4K delivery step, never probed).
+    ("speech-to-text", "speech to text stars:>2000"),
+    ("image-upscaling", "image upscaling stars:>300"),
 ]
 
 # freshness: brand-new projects getting traction (rotated windows)

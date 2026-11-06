@@ -10,6 +10,7 @@ today = date.today().isoformat()
 ledger_path = D / "seen-repos.json"
 ledger = json.loads(ledger_path.read_text(encoding="utf-8")) if ledger_path.exists() else {"repos": {}}
 repos = ledger.get("repos", {})
+by_lower = {k.lower(): k for k in repos}
 
 SPAM = ("dictat", "dictatorship", "cirosantilli", "scaling-octo-guide", "this-analysis-terminated",
         "setup-guide", "win-guide", "workflow-guide", "shotcut-download")
@@ -22,16 +23,87 @@ for raw_file in raw_files:
             name = it["full_name"]
             if any(s in name.lower() for s in SPAM):
                 continue
-            if name not in repos:
+            # case-insensitive: GitHub renames can change case only (jub0t/concat -> jub0t/Concat)
+            existing = by_lower.get(name.lower())
+            if existing is None:
                 repos[name] = {"stars": it["stars"], "first_seen": today, "queries": [slug]}
+                by_lower[name.lower()] = name
                 new_names.append(name)
             else:
-                repos[name]["stars"] = it["stars"]  # refresh star count
-                if slug not in repos[name]["queries"]:
-                    repos[name]["queries"].append(slug)
+                repos[existing]["stars"] = it["stars"]  # refresh star count
+                if slug not in repos[existing]["queries"]:
+                    repos[existing]["queries"].append(slug)
 
 # web-verified repos found outside the API sweep (add manually when needed)
 EXTRA = {
+    # 2026-11-06 backfill: the image-upscaling probe exposed a name-match hole (search matches name/description/topics
+    # only, so "image upscaling" misses "AI Image Upscaler" / "General Image/Video Restoration") -> famous tools never ledgered
+    "upscayl/upscayl": 51833,              # 51.8k* AGPL-3.0 v2.15.0 (pushed 10-05): one-click AI upscaler; upscayl-2.15.0-win.exe 248.8MB + win.zip 290.2MB = the simplest 4K-upscale step; never in the ledger before today
+    "xinntao/Real-ESRGAN": 37386,          # 37.4k* BSD-3-Clause v0.3.0, last push 2024-08 (stale upstream, still the model family chaiNNer/cupscale/realesrgan-gui all wrap)
+    "NatronGitHub/Natron": 5659,           # 5.7k* GPL-2.0 v2.5.0 (pushed 07-24): node-based compositor, Natron-2.5.0-Windows-x86_64.zip 187.3MB = the free AE-compositing tier the ledger was missing
+    "KDE/kdenlive": 6055,                  # 6.1k* GPL-3.0 GitHub mirror (real home invent.kde.org, pushed today): the KDE NLE; /releases/latest 404 on the mirror (builds live on invent.kde.org)
+    "jliljebl/flowblade": 3104,            # 3.1k* GPL-3.0 v2.24.2 (pushed 10-29): GTK NLE, Linux-only
+    # 2026-11-06 web finds (API-verified today; stars @ verify time)
+    "wide-trace/open-higgsfield": 5399,    # 5.4k* NO LICENCE file (API license=null), created 08-26, last push 09-17, TypeScript, no releases: "A studio for image and video generation - one prompt bar, each model's own settings" = the biggest closed-SaaS Higgsfield clone by stars; unusable as a dependency until it declares a licence
+    "SegFault42/HeliosGen": 3372,          # 3.4k* NO LICENCE, created 04-12, push 09-17: self-hosted Gen-AI desktop app ("free alternative to Higgsfield/OpenArt/Freepik"); release v1.2.1 ships HeliosGen_1.2.1_aarch64.dmg ONLY = macOS Apple Silicon, no Windows build
+    "BeatAPI/BeatDesign": 331,             # 331* Apache-2.0, created 08-20, pushed 11-04: local-first AI canvas + timeline drivable by any MCP agent, "open-source alternative to Higgsfield"; releases only ship a WorkBuddy connector tgz (app is built from source) = watchlist
+    "higgsfield-ai/cli": 698,              # 698* MIT official CLI v1.2.3 with hf_1.2.3_windows_amd64.tar.gz - but every generation bills the PAID Higgsfield cloud, so it is a client, not a local pipeline
+    "thePloggy/CreatorOS-Studio": 61,      # 61* Apache-2.0 created 10-29 (Comfy "Open Source Higgsfield" entry): one recurring character -> edited reel; ALL numbers measured on RTX 5090 32GB + ComfyUI 0.43 + Ubuntu 26.04 = NOT 16GB/Windows-fit today; no release assets
+    "toyxyz/toyxyz_RGBMocap": 719,         # 719* MIT via raw LICENSE (API says NOASSERTION): native Windows app, video -> editable human animation, local ExMR/FlowHMR/GVHMR + contact correction + humanoid retargeting, multi-cam; needs Git for Windows for setup; pushed today
+    "chenthedesignmaker/ComfyUI-Picky": 39, # 39* GPL-3.0: "render it ten ways, keep one" film studio for MiniMax H3 in ComfyUI (takes/lineage/cast + agent skill) - H3 weights carry the US/EU/UK/KR territory exclusion, so local-in-Florida is a licence dead end
+    "d4niel-fr/shdw-video-editor": 7,      # 7* AGPL-3.0 created 10-16: DaVinci-style timeline where Claude Code/Codex writes motion graphics as code, self-checks frames, exports MP4/H.265/ProRes 4444 alpha/WebM alpha/GIF/SRT; v1.0.0 ships shdw_1.0.0_x64-setup.exe 2.5MB + msi BUT only 7 stars / 2 commits = too early, watchlist
+    # 2026-11-05 web finds (API-verified today; stars @ verify time)
+    "veedstudio/open-edit": 1779,          # 1.8k* Apache-2.0 (repo created 07-22, pushed today): agent-driven editing pipeline, "describe the edit, get the MP4"; npm @veedstudio/openedit-cli 0.8.0 (14 versions, Apache-2.0, published 11-04); *** ON-MACHINE: `npx -y @veedstudio/openedit-cli@0.8.0 --help` exit 0; render 60f/30fps/640x360 -> MP4 in 6.3s (105 ms/frame, 2 workers) with `--chrome`; `--transparent` -> ProRes 4444 yuva444p12le 15f/0.5s; `review` QC gate found canvas 360px short side, passed blank-frame/text-contrast ***; renderer = pinned Chrome Headless Shell (114.6MB) which FAILED to unpack on Windows (EPERM, %APPDATA%\veed-openedit\browser\.tmp-*) -> workaround `--chrome "C:/Program Files/Google/Chrome/Application/chrome.exe"` or OPENEDIT_CHROME; VEED render engine binaries are separate + closed (PolyForm Shield 1.0.0, free to use/sell output); CLI commands: transcribe/whisper/words/brief/generate/background-removal/lipsync/install-ffmpeg/install-whisperx/install-mediapipe/mux-audio/mix-audio/concat-videos/frames/shots/faces/behind/captions/reframe/render/install-browser/fonts/safe-zone/speech-probe/apply-edl/retime-transcript/stills/fal/veed-project/veed-pull/review/init
+    "JuneYaooo/rea-video": 1768,           # 1.8k* Apache-2.0 created 10-29 (+907/day on gittrend 11-04): reverse-engineer ANY video shot by shot - filmed vs AI-generated vs coded, how captions/cuts/audio were made, then a remake plan; ffmpeg + Python 3.10+, tools-only mode offline+free, optional video model for recompressed platform downloads (noise evidence wiped); 8-language READMEs
+    "harlixay7/Kinoloom": 24,              # 24* MIT created 10-25: local AI film studio for ONE Windows PC, 8GB NVIDIA + 64GB RAM; LTX-2.5 + MiniMax H3 (BYO weights) + Qwen-Image 2.1 on ComfyUI; joins short clips into long takes; one-person project tested on one machine
+    "inclusionAI/Ming-3.0-tts": 526,       # 526* MIT created 10-19: open TTS family - 0.5B dense + "tiny" MoE 7.9B total/1.3B active on Ling V3; multilingual, voice cloning, voice design, natural-language + paralinguistic control; 0.5b = pip requirements, torch 2.6/CUDA 12.4; tiny needs py3.10.15 + torch 2.7.1+cu118
+    "ConardLi/garden-skills": 13977,       # 14.0k* MIT: production Agent Skills collection - motion-showreel (code-rendered films to 20-min chapters, 40 styles, voice-led timing), web-video-presentation, web-design-engineer, gpt-image-2, beautiful-article; `npx skills add` or Claude plugin marketplace
+    "haiderfarooq3/paper-reel": 85,        # 85* MIT created 10-23: cut-paper faceless 9:16 explainer reels (Kokoro + whisper.cpp + canvas + playwright + ffmpeg, no API key) - *** macOS ONLY per README ***
+    "shinshin86/mesh-avatar-studio": 1873, # 1.9k* MIT created 10-04: one illustration -> animated 2D mesh avatar (blink/talk/head-turn/breath), local editor + live preview, agent prepares the rig; has a Windows section
+    "elvarofficial/teardown": 2073,        # 2.1k* MIT created 10-30: Claude Code skill -> any machine as an offline 3D simulator you can take apart, self-touring page, real numbers; Node 20+, ffmpeg for the film
+    "AirsupHQ/machine-skill": 586,         # 586* MIT created 10-12: one-line machine description -> photoreal physics-based interactive sim in ONE HTML file + the film to post it
+    "ahujasid/camera-to-blender": 1364,    # 1.4k* MIT created 09-03: photo of real objects -> Blender (stale, last push 09-05)
+    # 2026-11-04 web finds (API-verified today; stars @ verify time)
+    "CodeWithAmeer/MeerCut": 93,           # 93* GPL-3.0-or-later Windows-11 x64 NLE (C++, Qt-style native, no telemetry): 54 title templates, 30 effects, 43 filters, .cube LUTs, SRT+ASS import/export, NVENC/QSV, ProRes 422, local AI (RVM matting, whisper.cpp captions, YuNet auto-reframe, RIFE, Real-ESRGAN); *** headless renderer `fa-render.exe` with JSON fa-project format, --subtitles burn-in, --frames/--size/--fps, exit codes ***; v1.0.0 portable 91.8MB + setup 71.0MB + SHA256SUMS; ON-MACHINE: sha256 match, extracted, fa-render --help exit 0, `--version` 0.1.0 + FFmpeg 9.0.2, --list-gpus saw RTX 5070 Ti, REAL RENDER 144 frames 720p24 H.264+AAC w/ burned-in SRT in 1.8s via h264_nvenc
+    "MagoStudio/MagoStudio": 255,          # 255* AGPL-3.0 created 11-02: local-first desktop AI video editor, renders on your GPU through ComfyUI (bundled Windows wizard installs ComfyUI + nodes) or Mago Cloud; Windows/macOS/Linux, signed Win builds; v0.19.0 Mago.Studio-0.19.0.Setup.exe 189.2MB + dmg + deb
+    "sirioberati/YouTube-AI-Motion-Graphics": 149, # 149* MIT: 74 animated 1920x1080 HTML+GSAP explainer boards (charts/diagrams/timelines/heatmaps) + Whisper word-level sync; tools/export.py drives Chrome frame-exact (virtual clock, no screen recording) then FFmpeg; python tools/export.py boards/X.html --seconds 8 -o out.mp4
+    "Moessif/code-video-showcase": 319,    # 319* MIT: pure-code beat-synced 30-90s showcase film skill (HTML/Canvas/SVG/Three.js frames + numpy/scipy score + FFmpeg), no generative models, Node20+
+    "andreavolpato/spektrafilm": 1884,     # 1.9k* GPL-3.0 spectral film simulation (RAW -> virtual negative/print/scan from datasheet data) + desktop GUI; `uvx --python 3.13 --from git+... spektrafilm`; LUTs have a separate no-resale licence; last push 07-14
+    "apekshik/anyscene": 293,              # 293* MIT created 10-30: agents build photoreal Blender scenes from a paragraph (image->3D props via fal, scripted layout/lighting/camera/grade); **REQUIRES paid FAL_KEY (~$1.65/scene)**, ffmpeg; built on Windows+NVIDIA
+    "blendi-remade/prompt2rig": 519,       # 519* Apache-2.0: prompt -> video model (fal, PAID) acts motion -> GVHMR recovers 3D body+hand motion locally -> live Mixamo retarget -> Blender/Unity export
+    "harry7557558/spirula-studio": 2134,   # 2.1k* GPL-3.0: 3D Gaussian Splatting trainer in ONE self-contained binary (no Python/PyTorch/COLMAP), video->splat->textured mesh, Vulkan or CUDA; release v2026.10.30 asset spirula-2026.10.30-windows-vulkan-x86_64.zip 72.0MB
+    "hyz317/HairDeck": 800,                # 800* Apache-2.0: single image -> stylized animation-ready hair cards + spring-bone chains, GLB/VRM export; Windows support 11-02 (local Gradio, auto model offload), MPS 11-03; HF weights
+    "wquguru/shisei": 426,                 # 426* Apache-2.0 code / CC0 images: 280 mannequin poses x 5 angles as line art + clay/depth/normal maps for AI pose reference; release v0.4.1 zips (line art 36.5MB)
+    "ersinkoc/AI-Video-Factory": 181,      # 181* MIT created 10-29: topic -> finished multilingual YouTube video, Claude agents write/plan/draw/review + human-in-the-loop Studio; .srt always written beside the video; OPTIONAL fal/Gemini/ElevenLabs keys; Windows installer irm https://wrongstack.com/install.ps1
+    "afj176/open-cinema-studio": 35,       # 35* MIT created 11-03: local open-weights film studio on ComfyUI - story, shot direction, reference frames, LTX video WITH AUDIO, final cuts
+    "higgsfield-ai/skills": 1876,          # 1.9k* MIT official Higgsfield agent skills - but every generation bills to the PAID Higgsfield cloud, so it is a front-end, not a local pipeline
+    "timoncool/speech-studio": 207,        # 207* MIT via raw LICENSE (API says NOASSERTION): free OFFLINE Windows voice studio in Rust - TTS with cloned + built-in voices and ASR with speaker labels; v0.4.0 (11-03) Speech-Studio-0.4.0-portable-windows-x64.zip 30.3MB + mac dmg + linux; Russian-first models, 100% local
+    # 2026-11-03 web finds (API-verified today; stars @ verify time)
+    "wj-sidiss/otopilot": 188,             # 188* MIT faceless shorts: topic -> script/free CC0 images/Edge-TTS/subs/thumbnail, Node22+, NO key needed, Windows PANEL.bat; ON-MACHINE: cloned, npm ci --ignore-scripts, `node ff-yol.js` exit 0 (ffmpeg+ffprobe found); v1.13.0, Turkish-first docs
+    "raunakpatil/youtube-agentic-ai-studio": 211,  # 211* MIT one-command research->script->narrate->upload faceless pipeline; created 04-23, pushed 11-01
+    "mromidev/claude-animated-shorts": 987, # 987* MIT created 11-01 (2 days!): 55-70s vertical animated story shorts, 2D characters in 3D world, three.js inside Remotion, no AI video model; SKILL.md + measured style bible + 38 reference frames
+    "DamaizLabs/lanternist": 24,           # 24* MIT faceless YouTube production engine for Claude Code; Windows 11 64-bit ONLY, NVIDIA CUDA 8GB VRAM min (tested 3060 Ti 8GB), Py3.12+Git+Node+ffmpeg, ComfyUI+Qwen-Image local
+    "rk0neki/OpenKatana": 22,              # 22* Apache-2.0 agent-driven video editing (Studio + ComfyUI Apps + CLI + MCP); CI covers Windows+Linux Py3.11/3.12; v0.1.2 wheel + source zip shipped 11-03
+    "Editorenbici/leafreel": 1,            # 1* Apache-2.0 doc -> narrated explainer in 8 styles (papercut/pixel/watercolor/clay/cinematic); ComfyUI + Comfy SDK, code-rendered cards/kinetic type via HTML+GSAP in headless Chromium (1,200 frames ~7s); `leafreel doctor`; open-weights CI gate
+    "Tekholms-LW/ReAngle": 6,              # 6* Apache-2.0 re-shoot any clip from a new camera angle; ComfyUI + LTX-2.5 22B Q4_K_M = explicit 16GB tier w/ VRAM watchdog; FastAPI + node pack; LTX-2.x Community Licence
+    "mojomast/comfyrizz": 2,               # 2* MIT brief -> narrated motion-graphics explainer; Pi agent + ComfyUI (FLUX 3 Klein / LTX-2.5) on Colab or BYO + Remotion assembly; Node22.19/pnpm/ffmpeg/Py3.12; ships a Hermes plugin section
+    "storytold/craft-anything": 6553,      # 6.5k* Apache-2.0/MIT pure-Rust created 10-31 (ArtCraft): point at any website/app/game, inspect it, have an agent rebuild your own version + diff/refine; Win/mac/Linux/WASM
+    "OpenSenseNova/SenseNova-6.8-Code2Video": 355,  # 355* NO LICENCE: first open model for code-driven video creation (released 10-24) - research/watching only
+    "yunachoi404/nightshift": 0,           # 0* Apache-2.0 ComfyUI video studio (drafts then finals from the same latent, SSIM 0.91-0.96); release = Nightshift-0.1.0-arm64.dmg ONLY = macOS, not usable here yet
+    "FrameDeptCo/freavy": 8,               # 8* MIT local-first node canvas on ComfyUI+Ollama (Weavy alternative); Windows 11 only, tested 24GB 4090 -> image OK, video too heavy on 16GB
+    # 2026-11-02 web finds (API-verified today; stars @ verify time)
+    "Zarxrax/Sammie-Roto-2": 491,          # 491* GPL-3.0 BEST WIN MATTING GUI: cross-platform NiceGUI desktop app, SAM2 + MatAnyone/MatAnyone2 + VideoMaMa matting + MiniMax-Remover/ProPainterX object removal + anime seg; v2.5.0 (10-04) asset Sammie-Roto-2.5.0.zip 6.8MB HEAD200 (2,170 dl), Windows = extract + install.bat + run_sammie.bat, AMD-on-Win preliminary since 2.4.1; bundled models are the NON-COMMERCIAL cluster (MatAnyone S-Lab, VideoMaMa CC BY-NC, SAM3 Meta) -> local/creative only
+    "kaankiziltug/logo-design-skill": 5784,  # 5.8k* MIT logo craft for agents: principles + process + SVG technique + testing tools + 1,400+ logo reference library; created 09-26, pushed 10-20 -> brand-asset lane input
+    "Leonxlnx/earshot": 3497,              # 3.5k* MIT AUDIO QC FOR AGENTS, CPU-only: describe/match/rank/find/compare/realness/timeline/critique film.mp4 (23 metrics + fix-first), sfx+kit render 252 code-synthesised effects aimed at cue frames; CLI + Python API + MCP; numpy-only core (torch optional); *** PyPI `earshot` is a DIFFERENT project (pykeio VAD) - source install only ***
+    "lucasmarkes/hairline": 3271,          # 3.3k* MIT 33 isometric line figures that answer the pointer; npm @lucasmarkes/hairline, zero deps ESM, shadcn registry entry; created 10-01
+    "Vincentwei1021/mg-styles-15": 2877,   # 2.9k* MIT 15 complete 10s motion-design styles, each with prompt + full source + audio.py synthesised score (103 samples); render shape = web page renderAt(t) -> headless Chrome frames -> ffmpeg mux; no gen model
+    "LottieFiles/motion-design-skill": 2707, # 2.7k* MIT timing/easing/choreography + Disney principles adapted to UI; numbers instead of "make it snappy"
+    "alchaincyf/huashu-motion": 2053,      # 2.1k* MIT commercial-grade launch films from a coding agent, CLICK-A-FRAME to change only that fragment; composes its own music
+    "deeplethe/solid-glass": 2031,         # 2.0k* MIT solid-glass design system on shadcn/ui + Tailwind 4 + React 19, 13 registry items
+    "cth9191/animate": 1377,               # 1.4k* MIT procedural animation skill: single-file <canvas>, deterministic frames, 7 built-in styles (cut paper/crosshatch/riso/sketchbook/math/pixel/isometric) + matched-from-references; delivery ships measured checks (beat-grid cuts, story-arc loudness, hero anchoring)
+    "tenetmotion/Samosa": 5,               # 5* GPL-3.0 AI roto/matting/removal panel FOR AFTER EFFECTS (CEP) - useless without the Adobe app; recorded so it is not re-found
+    "splazapp/SplazMatte": 8,              # 8* NO licence: VideoMaMa+MatAnyone+CoTracker3 NiceGUI toolkit, AE keyframe export; stale 03-09
+    "shubhxtech/AutoShorts": 2,            # 2* MIT stub: local Whisper+Qwen+Qwen3-TTS faceless studio (7 formats) on Ollama/LM Studio, Windows support claimed; right idea, empty repo
     # 2026-10-31 web finds (API-verified today; stars @ verify time)
     "oso95/scroll-world": 10690,           # 10.7k* MIT LEDGER GAP: agent skill -> scroll-SCRUBBED "fly through the world" brand landing page (camera flies outside->inside each scene, one continuous uncut flight); `npx skills add oso95/scroll-world` or /plugin marketplace add; ships a portable vanilla-JS scrub engine (HTML/Next/Vue/Python); art via paid Higgsfield/Seedance-on-Monid or Codex-CLI images; created 07-06, DORMANT since 07-29 = reference architecture, engine still usable; invisible to all 33 queries (3D-web lane)
     "Owl-Listener/designer-skills": 3170,   # 3.2k* MIT design-skill collection (research -> systems -> UI -> interaction -> delivery), created 03-07, pushed 09-05
