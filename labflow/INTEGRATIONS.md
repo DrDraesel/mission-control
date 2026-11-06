@@ -18,15 +18,44 @@ outbound paths listed at the bottom.
         └──────────────────┘ └──────────┘ └──────────────────────┘
 ```
 
-## The five pieces
+## The seven pieces
 
 | App | Kind | Address / path | What it owns |
 |---|---|---|---|
-| **LabFlow** | FastAPI | `http://127.0.0.1:8790` | patient records, step workflow, measurement registry, notifications |
+| **LabFlow / Mission Control** | FastAPI | `http://127.0.0.1:8790` | patient records, step workflow, measurement registry, master panel, notifications |
 | **Bertec Jump** | FastAPI | `http://127.0.0.1:8765` | force plate acquisition, protocols, balance metrics, vision lane |
 | **RunTrack** | Flask | `http://127.0.0.1:8780` | treadmill/cycling form studies, camera rig, clinical workspace |
 | **NeuroSync** | Desktop (Qt) | `recordings/subjects/<subject>/<timestamp>/` | EEG capture, qEEG grid, reports |
+| **InBody Stage 1** (`DrDraesel/InBodyStage1`) | Local web app (Python) | `http://127.0.0.1:8080` · DB `runtime/inbody.db` | body composition: import (manual/normalized/PDF-OCR/spreadsheet), rules, trends, clinician + patient summaries, append-only history |
+| **Intake Kiosk** (`DrDraesel/Intakekiosk`) | React/Vite (kiosk UI) | local dev server, or the Vercel demo | voice/text patient intake (EN/ES/RU), 23-question health interview — **in-memory only, no persistence** |
 | **Design system** | Files | `projects/design-system/` | `tokens.css`, `components.css`, `lab_theme.py` shared by the UIs |
+
+> **Port note:** InBody Stage 1 defaults to **8080**, the same port Strata uses. Run InBody on `8088`
+> (or keep Strata stopped) — two listeners on 8080 is the kind of collision that looks like "the app
+> is broken" for an hour.
+
+## InBody Stage 1 contract (the body-composition source of truth)
+
+- **DB:** SQLite at `runtime/inbody.db` (`INBODY_DATABASE_URL`). Tables: `patients`, `encounters`,
+  `results` (with `content` = normalized JSON, `supersedes`, `source_hash`), `analyses`, `reviews`,
+  `audit`, `outbox`.
+- **Normalized payload** (`schemas/normalized-v1.json`): required `encounter_id`, `test_timestamp`,
+  `source_identifier`, `measurements[{metric,value,unit,status?}]`; optional `patient_id`,
+  `device_model`, `source_type` ∈ manual | mock_api | pdf | image | spreadsheet.
+- **REST:** `GET /patients/{id}/inbody`, `/inbody/{result_id}`, `/inbody/trends`,
+  `POST /patients/{id}/inbody/import`, `POST /inbody/webhook`, `/health`.
+- **Mission Control reads it read-only** (DB or API) and maps measurements to `body.*`.
+  It never writes into the InBody store; corrections stay in InBody's own append-only history.
+
+## Intake Kiosk → Mission Control
+
+- The kiosk today keeps everything **in browser memory** and stores nothing. Its Vercel demo is a
+  synthetic-data prototype; do not type real patient answers into it.
+- Local wiring (the only PHI-safe path): run the kiosk on the clinic PC (`npm run dev`,
+  `http://127.0.0.1:5173`) and point it at LabFlow on loopback. A completed intake becomes a
+  LabFlow patient via `POST /api/patients`; nothing leaves the machine.
+- Until that endpoint is wired, intake is entered in LabFlow's own form — the kiosk is a UI prototype,
+  not a record system.
 
 ## Contracts (what each side actually promises)
 

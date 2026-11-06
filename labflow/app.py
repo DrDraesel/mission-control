@@ -78,6 +78,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from labflow.engine import FlowEngine
+from labflow.mc.api import build_router as build_mc_router
 from labflow.notify import make_notifier
 from labflow.patients import PatientStore
 from labflow.result_probes import probe_all
@@ -185,7 +186,7 @@ def _retrying_save(save_func):
 
 
 def create_app(config=None, store=None, workflow=None, notifier=None, engine=None,
-               probe_fn=None, static_dir=None) -> FastAPI:
+               probe_fn=None, static_dir=None, mc_ingest=None) -> FastAPI:
     """Build the FastAPI app.  Every collaborator is injectable for tests."""
     config = config if isinstance(config, dict) else load_config()
     store = store if store is not None else PatientStore(default_data_dir(config))
@@ -350,6 +351,40 @@ def create_app(config=None, store=None, workflow=None, notifier=None, engine=Non
         never mutates a patient — the front desk stays the only writer.
         """
         return FileResponse(str(static_root / "mirror.html"))
+
+    # -- Mission Control (EHR-shaped lab record) ---------------------------
+    # The API lives in labflow/mc/api.py; the factory takes this app's single
+    # PatientStore so MC never opens a second store.  ``mc_ingest`` is
+    # injectable so tests point the adapters at empty fixture roots instead of
+    # the live lab trees.
+    app.include_router(build_mc_router(store, data_dir=store.root_dir, ingest=mc_ingest))
+
+    def _mc_page(name: str):
+        path = static_root / "mc" / name
+        if not path.exists():
+            raise ApiError(404, f"Mission Control UI not installed: {path}")
+        return FileResponse(str(path))
+
+    @app.get("/mc")
+    @app.get("/mc/")
+    def mc_index():
+        return _mc_page("index.html")
+
+    @app.get("/mc/patient/{patient_id}")
+    def mc_patient_page(patient_id: str):
+        # The page is a shell: a stale/bookmarked id still renders and the JS
+        # shows the API's 404.  Only /api/mc/patients/{pid}/... enforces existence.
+        return _mc_page("patient.html")
+
+    @app.get("/mc/integrations")
+    @app.get("/mc/integrations/")
+    def mc_integrations_page():
+        return _mc_page("integrations.html")
+
+    @app.get("/mc/inbody")
+    @app.get("/mc/inbody/")
+    def mc_inbody_page():
+        return _mc_page("inbody.html")
 
     # -- patients ----------------------------------------------------------
     @app.get("/api/patients")

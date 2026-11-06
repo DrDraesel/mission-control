@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Integrations — Mission Control</title>
+<link rel="stylesheet" href="/static/mc/lab-ui/tokens.css">
+<link rel="stylesheet" href="/static/mc/lab-ui/components.css">
+<link rel="stylesheet" href="/static/mc/mc.css">
+<script src="/static/mc/mc.js" defer></script>
+</head>
+<body class="lab-bg" data-page="integrations">
+<div class="shell">
+  <nav class="rail" aria-label="Mission Control">
+    <div class="brand" title="Mission Control">MC</div>
+    <a href="/mc" data-nav title="Patients" aria-label="Patients">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="8" r="3.2"></circle><path d="M3.5 19.5c0-3 2.5-5 5.5-5s5.5 2 5.5 5"></path>
+        <path d="M16 5.4a3 3 0 0 1 0 5.2M17.5 14.6c1.9.6 3 2.2 3 4.4"></path>
+      </svg>
+      <span class="lbl">Patients</span>
+    </a>
+    <a href="/mc/integrations" data-nav title="Integrations" aria-label="Integrations">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 3v5M15 3v5"></path>
+        <path d="M6.5 8h11v3.5a5.5 5.5 0 0 1-11 0V8Z"></path>
+        <path d="M12 17v4"></path>
+      </svg>
+      <span class="lbl">Integrations</span>
+    </a>
+    <a href="/mc/inbody" data-nav title="InBody manual entry" aria-label="InBody manual entry">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3.5" y="4" width="17" height="16" rx="3"></rect>
+        <path d="M7 12h2.5l1.5-3 2 6 1.5-3H17"></path>
+      </svg>
+      <span class="lbl">InBody</span>
+    </a>
+    <span class="spacer"></span>
+    <a href="/" title="LabFlow intake" aria-label="LabFlow intake">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h5"></path>
+        <path d="M14 8l4 4-4 4M18 12H9"></path>
+      </svg>
+      <span class="lbl">LabFlow intake</span>
+    </a>
+  </nav>
+
+  <main class="main stack">
+    <header class="topbar mc-head">
+      <div class="titles">
+        <h1>Integrations</h1>
+        <p class="sub">Read-only paths this record reads from. Nothing is written back into the station apps.</p>
+      </div>
+      <div class="tools mc-tools">
+        <button id="refresh-integrations" class="btn" type="button">Refresh status</button>
+      </div>
+    </header>
+
+    <div id="page-notice" class="notice-stack" role="status"></div>
+
+    <section class="card" aria-labelledby="sources-title">
+      <header>
+        <h2 id="sources-title">Sources</h2>
+        <div class="right"><span class="muted small" id="integrations-stamp">checking&hellip;</span></div>
+      </header>
+      <div class="table-wrap">
+        <table class="table mc-table integrations-table" id="integrations-table">
+          <colgroup>
+            <col class="c-source">
+            <col class="c-path">
+            <col class="c-reach">
+            <col class="c-sessions">
+            <col class="c-checked">
+            <col class="c-action">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Source</th>
+              <th>Path / endpoint</th>
+              <th class="num">Reachable</th>
+              <th class="num">Sessions found</th>
+              <th>Last checked</th>
+              <th>What to do</th>
+            </tr>
+          </thead>
+          <tbody id="integrations-body"></tbody>
+        </table>
+      </div>
+      <div id="integrations-empty" class="empty" hidden>
+        <div class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 3v5M15 3v5"></path><path d="M6.5 8h11v3.5a5.5 5.5 0 0 1-11 0V8Z"></path><path d="M12 17v4"></path>
+          </svg>
+        </div>
+        <h3>No integration status yet</h3>
+        <p>The Mission Control API has not reported any source. Start LabFlow, then refresh this page.</p>
+      </div>
+    </section>
+
+    <section class="card quiet" aria-labelledby="unreachable-title">
+      <header><h2 id="unreachable-title">When a source is unreachable</h2></header>
+      <ul class="bullets small muted">
+        <li><strong>Bertec</strong> &mdash; open Bertec Jump and finish a protocol; sessions are read from <code>bertec-jump/data/protocols/*/session.json</code>.</li>
+        <li><strong>RunTrack</strong> &mdash; start RunTrack and complete a session; <code>runtrack/data/runtrack.db</code> must exist and be readable.</li>
+        <li><strong>NeuroSync</strong> &mdash; record a session. An empty <code>recordings/</code> folder is a valid empty state, not a failure.</li>
+        <li><strong>InBody</strong> &mdash; no device API is contracted. Enter values by hand and verify them against the device printout.</li>
+        <li><strong>Intake</strong> &mdash; comes from LabFlow&rsquo;s patient store; create or edit the patient in LabFlow.</li>
+      </ul>
+    </section>
+
+    <p class="page-foot">Lab record for research and operations. Not a certified EHR; not a medical device; clinical decisions are physician-led.<span class="stamp">Local record &middot; 127.0.0.1 &middot; nothing leaves this PC</span></p>
+  </main>
+</div>
+</body>
+</html>

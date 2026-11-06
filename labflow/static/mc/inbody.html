@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>InBody manual entry — Mission Control</title>
+<link rel="stylesheet" href="/static/mc/lab-ui/tokens.css">
+<link rel="stylesheet" href="/static/mc/lab-ui/components.css">
+<link rel="stylesheet" href="/static/mc/mc.css">
+<script src="/static/mc/mc.js" defer></script>
+</head>
+<body class="lab-bg" data-page="inbody">
+<div class="shell">
+  <nav class="rail" aria-label="Mission Control">
+    <div class="brand" title="Mission Control">MC</div>
+    <a href="/mc" data-nav title="Patients" aria-label="Patients">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="8" r="3.2"></circle><path d="M3.5 19.5c0-3 2.5-5 5.5-5s5.5 2 5.5 5"></path>
+        <path d="M16 5.4a3 3 0 0 1 0 5.2M17.5 14.6c1.9.6 3 2.2 3 4.4"></path>
+      </svg>
+      <span class="lbl">Patients</span>
+    </a>
+    <a href="/mc/integrations" data-nav title="Integrations" aria-label="Integrations">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 3v5M15 3v5"></path>
+        <path d="M6.5 8h11v3.5a5.5 5.5 0 0 1-11 0V8Z"></path>
+        <path d="M12 17v4"></path>
+      </svg>
+      <span class="lbl">Integrations</span>
+    </a>
+    <a href="/mc/inbody" data-nav title="InBody manual entry" aria-label="InBody manual entry">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3.5" y="4" width="17" height="16" rx="3"></rect>
+        <path d="M7 12h2.5l1.5-3 2 6 1.5-3H17"></path>
+      </svg>
+      <span class="lbl">InBody</span>
+    </a>
+    <span class="spacer"></span>
+    <a href="/" title="LabFlow intake" aria-label="LabFlow intake">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h5"></path>
+        <path d="M14 8l4 4-4 4M18 12H9"></path>
+      </svg>
+      <span class="lbl">LabFlow intake</span>
+    </a>
+  </nav>
+
+  <main class="main stack">
+    <header class="topbar mc-head">
+      <div class="titles">
+        <h1>InBody &mdash; manual entry</h1>
+        <p class="sub">No device API is contracted, so values are typed from the printout. They are stored as <strong>unverified</strong> and marked as manual.</p>
+      </div>
+      <div class="tools mc-tools">
+        <a class="btn" href="/mc">Back to patients</a>
+      </div>
+    </header>
+
+    <div id="page-notice" class="notice-stack" role="status"></div>
+
+    <div class="inbody-layout">
+      <section class="card form-card" aria-labelledby="entry-title">
+        <header><h2 id="entry-title">Body composition</h2></header>
+
+        <div class="manual-note" role="note">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3.5 21 20H3L12 3.5Z"></path><path d="M12 9v5M12 17.2v.1"></path>
+          </svg>
+          <span><strong>Manual entry &mdash; verify against the device printout.</strong> Do not type a value you have not seen on the printout; the record keeps this as unverified.</span>
+        </div>
+
+        <p id="inbody-empty" class="banner warn" hidden>There are no patients yet. Create the patient in LabFlow first, then return to this page.</p>
+
+        <form id="inbody-form" autocomplete="off" novalidate>
+          <div class="form-grid">
+            <div class="field wide">
+              <label for="patient-select">Patient</label>
+              <select id="patient-select" class="input" name="patient_id" required>
+                <option value="">Loading patients&hellip;</option>
+              </select>
+            </div>
+            <div class="field wide">
+              <label for="measured_at">Measured at</label>
+              <input id="measured_at" class="input" name="measured_at" type="datetime-local" required>
+              <span class="hint">Date and time shown on the device printout, local time.</span>
+            </div>
+
+            <div class="field">
+              <label for="weight_kg">Weight (kg)</label>
+              <input id="weight_kg" class="input" name="weight_kg" type="number" inputmode="decimal" step="0.1" min="0" max="400" placeholder="e.g. 74.2">
+            </div>
+            <div class="field">
+              <label for="skeletal_muscle_kg">Skeletal muscle mass (kg)</label>
+              <input id="skeletal_muscle_kg" class="input" name="skeletal_muscle_kg" type="number" inputmode="decimal" step="0.1" min="0" max="200" placeholder="e.g. 33.8">
+            </div>
+            <div class="field">
+              <label for="body_fat_kg">Body fat mass (kg)</label>
+              <input id="body_fat_kg" class="input" name="body_fat_kg" type="number" inputmode="decimal" step="0.1" min="0" max="200" placeholder="e.g. 14.6">
+            </div>
+            <div class="field">
+              <label for="body_fat_pct">Body fat (%)</label>
+              <input id="body_fat_pct" class="input" name="body_fat_pct" type="number" inputmode="decimal" step="0.1" min="0" max="75" placeholder="e.g. 19.7">
+            </div>
+            <div class="field">
+              <label for="visceral_fat">Visceral fat (level)</label>
+              <input id="visceral_fat" class="input" name="visceral_fat" type="number" inputmode="numeric" step="1" min="0" max="60" placeholder="e.g. 7">
+              <span class="hint">Unitless level as printed by the device.</span>
+            </div>
+            <div class="field">
+              <label for="lean_mass_kg">Lean mass (kg)</label>
+              <input id="lean_mass_kg" class="input" name="lean_mass_kg" type="number" inputmode="decimal" step="0.1" min="0" max="200" placeholder="e.g. 59.6">
+            </div>
+            <div class="field">
+              <label for="bmi">BMI</label>
+              <input id="bmi" class="input" name="bmi" type="number" inputmode="decimal" step="0.1" min="0" max="100" placeholder="e.g. 23.4">
+              <span class="hint">Optional &mdash; only if the printout lists it.</span>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button id="inbody-submit" class="btn primary" type="submit">Save manual entry</button>
+            <span id="inbody-status" class="form-status" role="status" aria-live="polite"></span>
+          </div>
+          <p class="form-note muted small">Saving writes a new observation set under <code>body.*</code>. Existing values are never overwritten.</p>
+        </form>
+      </section>
+
+      <aside class="stack">
+        <section class="card" aria-labelledby="template-title">
+          <header><h2 id="template-title">CSV template</h2></header>
+          <p class="small muted">For batches, use the same columns as the manual form. One row per measurement.</p>
+          <p class="template-line"><a class="btn" href="/static/mc/inbody-template.csv" download="inbody-template.csv" type="text/csv">Download CSV template</a></p>
+          <pre class="template-code"><code>measured_at,<wbr>weight_kg,<wbr>skeletal_muscle_kg,<wbr>body_fat_kg,<wbr>body_fat_pct,<wbr>visceral_fat,<wbr>lean_mass_kg,<wbr>bmi</code></pre>
+          <p class="tiny muted">A CSV without a device serial is stored as unverified. Values are still traceable to the file through provenance.</p>
+        </section>
+
+        <section class="card quiet" aria-labelledby="manual-title">
+          <header><h2 id="manual-title">Before you save</h2></header>
+          <ul class="bullets small muted">
+            <li>Check the patient name and the measurement date against the printout.</li>
+            <li>Leave fields blank if the printout does not show them &mdash; a blank is honest, a zero is not.</li>
+            <li>Enter body fat either in kg or % (or both) exactly as printed; the app does not recompute it.</li>
+            <li>If a number looks wrong later, add a corrected entry; the timeline keeps both.</li>
+          </ul>
+        </section>
+      </aside>
+    </div>
+
+    <p class="page-foot">Lab record for research and operations. Not a certified EHR; not a medical device; clinical decisions are physician-led.<span class="stamp">Local record &middot; 127.0.0.1 &middot; nothing leaves this PC</span></p>
+  </main>
+</div>
+</body>
+</html>
