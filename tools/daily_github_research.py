@@ -118,14 +118,18 @@ TOPIC_QUERIES = [
     ("matting", "matting stars:>200"),
     # 11-04 rotation: retire rotoscoping (3 results, both stale/unclear);
     # add two adjacent craft names for the VO-cleanup + scripting halves of the pipeline
-    ("audio-editor", "audio editor stars:>500"),
+    # 11-07: audio-editor retired here (mined 11-03/11-04/11-06, 9 new on debut then flat)
     # 11-05 rotation: retire speech-enhance + screenwriting (both mined in one run 11-04);
     # audio-editor kept one more run. Two fresh craft names with star floors.
     # 11-06: keyframe-animation = iOS Obj-C name collision -> retired after one run.
     #       speech-to-text kept (only 10 of 50 mined). New craft name: image upscaling
     #       (Real-ESRGAN/upscayl/chaiNNer cluster = the 4K delivery step, never probed).
+    # 11-07 rotation: audio-editor retired (mined 11-03/11-04/11-06); the 11-06 pitfall
+    # says famous tools hide from phrase probes -> probe the CATEGORY at a star floor:
+    # Kdenlive/Shotcut/Pitivi/Flowblade-class NLEs were never verified as a category.
     ("speech-to-text", "speech to text stars:>2000"),
     ("image-upscaling", "image upscaling stars:>300"),
+    ("video-editor-giants", "video editor stars:>5000"),
 ]
 
 # freshness: brand-new projects getting traction (rotated windows)
