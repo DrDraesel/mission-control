@@ -129,7 +129,29 @@ TOPIC_QUERIES = [
     # Kdenlive/Shotcut/Pitivi/Flowblade-class NLEs were never verified as a category.
     ("speech-to-text", "speech to text stars:>2000"),
     ("image-upscaling", "image upscaling stars:>300"),
-    ("video-editor-giants", "video editor stars:>5000"),
+    # 11-08 rotation: `video-editor-giants` (14 total, top-12 all ledgered) parked — the
+    # GitHub-visible NLE tier is fully mapped. Two unprobed craft names, both unambiguous
+    # to a Linux dev (unlike `compositor`/`keyframe animation`) and both pipeline steps
+    # the ledger has never covered as a category: the subtitle editor (SRT/ASS/karaoke
+    # work happens nowhere in the ledger) and video stabilization (the camera-footage
+    # cleanup step for the RunTrack/Bertec vision lane).
+    # 11-09 rotation: `subtitle-editor` retired (5 results total, fully mined 11-08);
+    # replaced with the VFX/compositing craft name — the ledger's compositing tier is
+    # thin (Natron/EffectCraft only) and no query has ever named the craft. `vfx` is
+    # unambiguous to a Linux dev (Nuke/Fusion/Natron vocabulary, unlike `compositor`).
+    # 11-10 rotation: `vfx` = 54 total / 9 new, but ALL infrastructure (ASWF libs +
+    # renderers) -> mined; `video-stabilization` = 0 new on 2nd run -> mined.
+    # Two fresh craft names with star floors: caption INTERCHANGE (the sibling of the
+    # subtitle-editor lane — parsers/renderers, not GUI editors) and the render-engine
+    # tier (Filament/bgfx/OSPRay/Embree class, never probed).
+    # 11-11 rotation: BOTH retired after one run. `render-engine` = game-engine collision
+    # (opentk/PainterEngine/SpartanEngine/gzdoom/UZDoom/anki-3d + a React *view* engine) —
+    # only takumi + raea were real, and both came from elsewhere too. `closed-captioning`
+    # = 2 marginal hits (OBS live captions, a subtitle format converter).
+    # New: music visualization (audio-reactive visuals, the faceless-music half) and the
+    # design-system category (shadcn/Radix/Mantine class = the web/social asset layer).
+    ("music-visualizer", "music visualization stars:>300"),
+    ("design-system", "design system stars:>1000"),
 ]
 
 # freshness: brand-new projects getting traction (rotated windows)
