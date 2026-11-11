@@ -128,7 +128,6 @@ TOPIC_QUERIES = [
     # says famous tools hide from phrase probes -> probe the CATEGORY at a star floor:
     # Kdenlive/Shotcut/Pitivi/Flowblade-class NLEs were never verified as a category.
     ("speech-to-text", "speech to text stars:>2000"),
-    ("image-upscaling", "image upscaling stars:>300"),
     # 11-08 rotation: `video-editor-giants` (14 total, top-12 all ledgered) parked — the
     # GitHub-visible NLE tier is fully mapped. Two unprobed craft names, both unambiguous
     # to a Linux dev (unlike `compositor`/`keyframe animation`) and both pipeline steps
@@ -150,8 +149,20 @@ TOPIC_QUERIES = [
     # = 2 marginal hits (OBS live captions, a subtitle format converter).
     # New: music visualization (audio-reactive visuals, the faceless-music half) and the
     # design-system category (shadcn/Radix/Mantine class = the web/social asset layer).
-    ("music-visualizer", "music visualization stars:>300"),
-    ("design-system", "design system stars:>1000"),
+    # 11-12 rotation: BOTH retired after one run, plus `image-upscaling` (0 new twice).
+    #   `music visualization stars:>300` = 27 total / 11 new but the output is desktop
+    #   PLAYERS (SPlayer, BetterLyrics WinUI, MusicDNA, Rainmeter) - only projectM,
+    #   musializer and wave.js are render-side. `design system stars:>1000` = name
+    #   collision with "system design" (9 of 12 were interview-prep/infra repos); the two
+    #   real hits (google-labs-code/design.md 28.8k*, awesome-design-md 126k*) were still
+    #   worth the slot because the real vocabulary is invisible under the collision.
+    # New three are CERTAIN gaps (checked against the ledger first, all absent):
+    # TripoSR/TRELLIS/Hunyuan3D-2 (image->3D), Depth-Anything V1/V2 + MoGe class
+    # (depth estimation = the 3D-insert/relight step), abi/screenshot-to-code
+    # (design->code, the inverse of our render path).
+    ("image-to-3d", "image to 3d stars:>300"),
+    ("depth-estimation", "depth estimation stars:>500"),
+    ("screenshot-to-code", "screenshot to code stars:>500"),
 ]
 
 # freshness: brand-new projects getting traction (rotated windows)

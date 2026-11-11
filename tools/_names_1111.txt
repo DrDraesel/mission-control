@@ -1,0 +1,5 @@
+edenfunf/reelmimic
+SonderSaid/ComfyUI-Sonder-Editor
+nomadoor/ComfyUI-Panorama-Stickers
+Burgstall-Labs/spede
+BurgstallLabs/SpEdE
