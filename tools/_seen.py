@@ -36,6 +36,13 @@ for raw_file in raw_files:
 
 # web-verified repos found outside the API sweep (add manually when needed)
 EXTRA = {
+    # 2026-11-12 web finds (API-verified today; stars @ verify time)
+    "Comfy-Org/ComfyUI": 146470,  # 146.5k* GPL-3.0 pushed today: the CORE ComfyUI repo had never been in the ledger (39 plugin repos were); v0.45.0 (11-10) ships Windows portable nvidia 1,975.5 MB + UltraTex/RelayVSR/H3-Image/WeVisOne-VL in core = the 29-run blocker
+    "ifm-ai/PAN2": 55,            # 55* Apache-2.0 pushed 11-05: MBZUAI IFM 29B MMDiT world model, text(+optional image) -> up to 20 s at 704x1248@24fps, conceptual-reasoner LLM writes a time-grounded state; Diffusers + vLLM support; NO territory clause (unlike H3)
+    "UnlimitedEditing/ComfyUI-PAN2": 0,  # 0* NO licence file, created 11-11: Windows-capable ComfyUI port of PAN2 - pure PyTorch SDPA (no flash-attn/triton), fp8 weights 33.7 GB, blocks_on_cpu needs ~34 GB RAM; measured 448x256x13 f/16 steps ~65 s (5090) / ~129 s (4090); activations bind at full 704x1248x241
+    "yiboz2001/UltraTex": 144,    # 144* MIT pushed 10-07: SIGGRAPH Asia '26 2K multi-view diffusion 3D texturing (background token dropping + block-sparse attention), 20.6-91.1x train / 22.3-74.6x inference speedup; Triton kernels; native in ComfyUI v0.45.0
+    "visualbruno/ComfyUI-UltraTex": 57,  # 57* MIT pushed 10-24: ComfyUI UltraTex nodes, 12-16 GB 6-view PBR / 10-view workflows
+    "pixelartistry/PixelArtistry-UltraTex": 55,  # 55* NOASSERTION installer (nodes MIT), pushed 10-18: one-click Windows installer + 6-16 GB workflows (standard 6-view PBR / 10-view / GGUF 6-8 GB low-VRAM), ~25 GB fp8 models, runs the Triton sparse-attention kernel once before installing
     # 2026-11-11 web finds (API-verified today; stars @ verify time)
     "SonderSaid/ComfyUI-Sonder-Editor": 41,   # 41* GPL-3.0 created 07-19 pushed 11-10, Python: full timeline NLE INSIDE ComfyUI - scenes with own length/res/fps, video/audio/prompt/guide/driver/reference lanes, every render returns as a comparable take; installs from ComfyUI Manager, needs FFmpeg >= 7.0; honorable mention in Comfy #OpenSourceHiggsfield (winners 11-10)
     "nomadoor/ComfyUI-Panorama-Stickers": 245, # 245* MIT created 03-01 pushed 11-05, JS: 360/180 panorama as Sky + 3D/mesh/splat as World, stickers (image/video/3D) keyframed on a camera timeline then re-shot from any view; BEST OVERALL in Comfy #OpenSourceHiggsfield (announced 11-10); gated by local ComfyUI v0.25.0

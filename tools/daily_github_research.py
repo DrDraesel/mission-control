@@ -162,7 +162,14 @@ TOPIC_QUERIES = [
     # (design->code, the inverse of our render path).
     ("image-to-3d", "image to 3d stars:>300"),
     ("depth-estimation", "depth estimation stars:>500"),
-    ("screenshot-to-code", "screenshot to code stars:>500"),
+    # 11-13 rotation: `screenshot-to-code` = 7 total / 7 new, fully mined in one
+    # run (abi 81k*, emilwallner 16.5k*, ScreenCoder, codeimage, agent-vision-toolkit...).
+    # Two craft names checked against the ledger first: SAM 2 / segment-anything /
+    # rembg / BiRefNet / U2-Net are ALL absent (the matting probe covered matting
+    # models, never segmentation), and nerfstudio / gsplat / Brush are absent too
+    # (only LichtFeld-Studio and supersplat are ledgered).
+    ("image-segmentation", "image segmentation stars:>1000"),
+    ("gaussian-splatting", "gaussian splatting stars:>300"),
 ]
 
 # freshness: brand-new projects getting traction (rotated windows)
