@@ -27,3 +27,11 @@ Run one day by hand:
 - All patient/session data stays local (`labflow/data/` — gitignored, never committed; likewise `data/` and `recordings/` in the other apps).
 - Telegram alerts carry a patient label + step names only — no measurements.
 - **Not a medical device.** Research/orchestration tooling; clinical decisions are physician-led.
+
+## Patient visit workflow and digital consent (review candidate)
+
+The `intake_to_balance` profile follows **Intake → Digital consent → InBody → RunTrack → Bertec athlete / balance**. Select it in local `labflow/config.json` using `"workflow_profile": "intake_to_balance"`; the example configuration selects this profile. The original broad lab baseline remains available as `full_lab` and remains the compatibility default when the profile is omitted. Review open visits before switching profiles; no existing patient file is migrated automatically.
+
+In `/mc`, click the patient's name to open the chart. The chart now shows the received intake, current step, step checklist, digital consent, saved consent history and a link into the guided visit for that patient. Consent receipts retain the exact configured document, version/hash, signer, server timestamp, patient and visit binding. An unconfigured/unapproved document cannot be signed. Intake may be reviewed before consent; assessment begins after the separate consent step.
+
+See [patient workflow, consent configuration and verification](docs/PATIENT-WORKFLOW-CONSENT.md) for configuration and remaining clinic deployment dependencies. This candidate adds workflow mechanics; it does not certify live device capture, production authentication or clinical approval.

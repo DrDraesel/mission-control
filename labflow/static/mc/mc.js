@@ -386,7 +386,7 @@
       var last = patient.last_activity || patient.last_seen || patient.last_measured_at || patient.updated_at;
       var status = patient.status ? '<span class="badge plain">' + esc(patient.status) + "</span>" : "";
       return '<tr data-patient-id="' + esc(id) + '">' +
-        '<td class="name"><a href="/mc/patient/' + encodeURIComponent(id) + '">' + esc(name) + "</a>" +
+        '<td class="name"><a class="btn" href="/mc/patient/' + encodeURIComponent(id) + '">' + esc(name) + "</a>" +
         '<span class="sub">' + esc(id || "no id") + "</span></td>" +
         '<td class="age">' + (age == null ? "—" : esc(age)) + "</td>" +
         '<td class="when">' + (last ? esc(fmtWhen(last)) : '<span class="muted">no activity</span>') + "</td>" +
@@ -832,8 +832,72 @@
       exportLink.href = API + "/patients/" + encodeURIComponent(pid) + "/export.html";
     }
 
+    var visit = null;
+    var signatureId = null;
+    var patientPath = "/api/patients/" + encodeURIComponent(pid);
+    function loadVisit() {
+      return get(patientPath).then(function (view) {
+        visit = view;
+        var consent = view.consent;
+        var current = view.current;
+        $("#visit-next").textContent = current ? "Next: " + current.name + " · " + view.progress.done + "/" + view.progress.total + " steps complete" : "Visit steps complete";
+        $("#consent-state").textContent = consent.valid ? "Consent signed and saved for this visit." : consent.reason === "document_not_configured" ? "Visit blocked: the current IMW consent packet must be configured before signing." : "Visit blocked: " + consent.reason.replaceAll("_", " ") + ".";
+        $("#complete-intake").hidden = !current || !["intake", "consent"].includes(current.id);
+        var separateConsent = view.steps.some(function (step) { return step.id === "consent"; });
+        $("#complete-intake").disabled = !consent.can_proceed && !(separateConsent && current && current.id === "intake");
+        $("#complete-intake").textContent = current && current.id === "consent" ? "Confirm consent & continue to InBody" : "Confirm intake reviewed & continue";
+        $("#withdraw-consent").hidden = !consent.valid;
+        $("#guided-visit").href = "/?patient=" + encodeURIComponent(pid);
+        $("#consent-receipts").href = patientPath + "/consent/receipts";
+        $("#visit-intake").textContent = JSON.stringify(view.patient.intake || {}, null, 2);
+        $("#visit-steps").innerHTML = view.steps.map(function (step) { return "<li>" + esc(step.name) + " · " + esc(step.state) + "</li>"; }).join("");
+        return view;
+      });
+    }
+    $("#show-consent").addEventListener("click", function () {
+      loadVisit().then(function () {
+        var consent = visit.consent, doc = consent.document;
+        $("#consent-form").reset();
+        signatureId = crypto.randomUUID();
+        $("#consent-patient").textContent = visit.patient.name + " · DOB: " + (visit.patient.dob || "not recorded") + " · Visit: " + consent.visit_id;
+        $("#consent-title").textContent = doc ? doc.title : "Consent packet needs configuration";
+        $("#consent-version").textContent = doc ? "Version " + doc.version : "";
+        $("#consent-document").textContent = doc ? doc.text : "Staff must configure the current clinic-approved consent document. No signature can be recorded against an empty or unapproved form.";
+        $("#sign-consent").disabled = !doc || !doc.approved;
+        $("#consent-message").textContent = "";
+        $("#consent-dialog").showModal();
+      }).catch(function (error) { pageNotice("bad", error.message); });
+    });
+    $("#close-consent").addEventListener("click", function () { $("#consent-dialog").close(); });
+    $("#consent-form").addEventListener("submit", function (event) {
+      event.preventDefault();
+      $("#sign-consent").disabled = true;
+      var consent = visit.consent, doc = consent.document;
+      post(patientPath + "/consent", {submission_id: signatureId, visit_id: consent.visit_id,
+        document_version: doc.version, document_sha256: doc.sha256,
+        signer_name: $("#signer-name").value, signer_role: $("#signer-role").value,
+        relationship: $("#signer-relationship").value,
+        read_and_agree: $("#consent-agree").checked, electronic_signature: $("#consent-electronic").checked})
+        .then(function () { $("#consent-dialog").close(); return loadVisit(); })
+        .catch(function (error) { $("#consent-message").textContent = error.message; })
+        .then(function () { $("#sign-consent").disabled = false; });
+    });
+    $("#complete-intake").addEventListener("click", function () {
+      if (!confirm("Confirm this step and the selected patient identity have been reviewed.")) return;
+      $("#complete-intake").disabled = true;
+      post(patientPath + "/complete", {station_id: visit.current.id, notes: "Staff confirmed the current intake/consent step and patient identity."})
+        .then(loadVisit).catch(function (error) { pageNotice("bad", error.message); loadVisit(); });
+    });
+    $("#withdraw-consent").addEventListener("click", function () {
+      var reason = prompt("Record the patient's withdrawal reason. The signed receipt remains in the chart.");
+      if (!reason) return;
+      post(patientPath + "/consent/withdraw", {reason: reason}).then(loadVisit)
+        .catch(function (error) { pageNotice("bad", error.message); });
+    });
+
     function load() {
       clearNotice();
+      loadVisit().catch(function (error) { pageNotice("bad", "Visit status unavailable: " + error.message); });
       return get(API + "/patients/" + encodeURIComponent(pid) + "/chart")
         .then(function (payload) {
           var chart = payload.chart || payload;

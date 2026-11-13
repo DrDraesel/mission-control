@@ -1,0 +1,124 @@
+{
+  "name": "IMW Intake to Athlete / Balance Visit",
+  "version": "2026-11-13.v1",
+  "sort_rule": "config",
+  "stations": [
+    {
+      "id": "intake",
+      "name": "Intake review",
+      "app": "labflow",
+      "description": "Confirm patient identity and review incoming intake before consent.",
+      "typical_minutes": 10,
+      "launch": {
+        "type": "manual",
+        "value": "Review incoming intake in this chart"
+      },
+      "capture": {
+        "type": "manual",
+        "fields": [
+          "intake_reviewed",
+          "identity_confirmed"
+        ],
+        "probe": null
+      },
+      "requires": [],
+      "notes": "",
+      "alert_text": ""
+    },
+    {
+      "id": "consent",
+      "name": "Digital consent",
+      "app": "labflow",
+      "description": "Read and sign the current clinic-approved consent packet in this chart before assessment.",
+      "typical_minutes": 5,
+      "launch": {
+        "type": "manual",
+        "value": "Review & sign consent in the patient chart"
+      },
+      "capture": {
+        "type": "manual",
+        "fields": [
+          "consent_receipt_id"
+        ],
+        "probe": null
+      },
+      "requires": [
+        "intake"
+      ],
+      "notes": "",
+      "alert_text": ""
+    },
+    {
+      "id": "inbody",
+      "name": "InBody body composition",
+      "app": "inbody",
+      "description": "Capture the original device export or report in InBodyStage1; link and review the result for this patient and visit.",
+      "typical_minutes": 10,
+      "launch": {
+        "type": "manual",
+        "value": "InBodyStage1 local application; USB flash-drive export or printed report"
+      },
+      "capture": {
+        "type": "manual",
+        "fields": [
+          "result_id",
+          "source_confirmed"
+        ],
+        "probe": null
+      },
+      "requires": [
+        "consent"
+      ],
+      "notes": "",
+      "alert_text": ""
+    },
+    {
+      "id": "runtrack",
+      "name": "RunTrack movement assessment",
+      "app": "runtrack",
+      "description": "Open RunTrack and link the completed assessment session to this patient and visit.",
+      "typical_minutes": 30,
+      "launch": {
+        "type": "url",
+        "value": "http://127.0.0.1:8780"
+      },
+      "capture": {
+        "type": "auto",
+        "fields": [
+          "session_id"
+        ],
+        "probe": "runtrack sessions"
+      },
+      "requires": [
+        "inbody"
+      ],
+      "notes": "",
+      "alert_text": ""
+    },
+    {
+      "id": "bertec_balance",
+      "name": "Bertec athlete / balance assessment",
+      "app": "bertec",
+      "description": "Open the Bertec assessment and link its session. Preserve the device calibration and data-quality status.",
+      "typical_minutes": 25,
+      "launch": {
+        "type": "url",
+        "value": "http://127.0.0.1:8765"
+      },
+      "capture": {
+        "type": "auto",
+        "fields": [
+          "session_id",
+          "protocol",
+          "quality"
+        ],
+        "probe": "bertec protocol sessions"
+      },
+      "requires": [
+        "runtrack"
+      ],
+      "notes": "",
+      "alert_text": ""
+    }
+  ]
+}

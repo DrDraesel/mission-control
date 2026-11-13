@@ -5,5 +5,16 @@
     "bot_token_file": "",
     "chat_id": "",
     "include_patient_name": true
-  }
+  },
+  "consent_required": true,
+  "consent_document": {
+    "id": "imw-visit-consent",
+    "version": "REPLACE_WITH_APPROVED_VERSION",
+    "title": "IMW visit consent",
+    "text": "REPLACE_WITH_CURRENT_CLINIC_APPROVED_DOCUMENT_TEXT",
+    "approved": false,
+    "approved_by": "",
+    "approved_at": ""
+  },
+  "workflow_profile": "intake_to_balance"
 }
