@@ -79,8 +79,10 @@ from fastapi.staticfiles import StaticFiles
 
 from labflow.engine import FlowEngine
 from labflow.mc.api import build_router as build_mc_router
+from labflow.mc.ingest import Ingest
 from labflow.notify import make_notifier
 from labflow.patients import PatientStore
+from labflow.consent import ConsentStore
 from labflow.result_probes import probe_all
 from labflow.workflow import DEFAULT_WORKFLOW, Workflow
 
@@ -194,11 +196,19 @@ def create_app(config=None, store=None, workflow=None, notifier=None, engine=Non
     # flips, measurements, links) funnels through store.save — retry the
     # transient Windows lock at that single, repeat-safe choke point.
     store.save = _retrying_save(store.save)
-    workflow = workflow if workflow is not None else load_workflow()
+    if workflow is None:
+        profile = config.get('workflow_profile', 'full_lab')
+        if profile not in ('full_lab', 'intake_to_balance'):
+            raise ValueError('Unknown workflow_profile')
+        workflow = Workflow.from_yaml(BASE_DIR / 'patient-workflow.yaml') if profile == 'intake_to_balance' else load_workflow()
+        if workflow.validation_errors():
+            raise ValueError('Invalid workflow configuration')
     if notifier is None:
         notify_cfg = config.get("notify")
         notifier = make_notifier(notify_cfg if isinstance(notify_cfg, dict) else {})
     engine = engine if engine is not None else FlowEngine(store, workflow, notifier)
+    consent = ConsentStore(store, config)
+    mc_ingest = mc_ingest if mc_ingest is not None else Ingest(store=store, data_dir=store.root_dir)
     static_root = Path(static_dir) if static_dir is not None else STATIC_DIR
 
     app = FastAPI(title="LabFlow", version="1.0.0", docs_url="/docs", redoc_url=None)
@@ -276,6 +286,7 @@ def create_app(config=None, store=None, workflow=None, notifier=None, engine=Non
 
     def _station_payload(station, order=None, step=None) -> dict:
         data = station.to_dict()
+        data["station_id"] = station.id
         if order is not None:
             data["order"] = order
         if step is not None:
@@ -318,6 +329,7 @@ def create_app(config=None, store=None, workflow=None, notifier=None, engine=Non
             "next": current,
             "next_instruction": engine.next_instruction(patient),
             "progress": engine.progress(patient),
+            "consent": consent.status(patient),
         }
 
     def _workflow_payload() -> dict:
@@ -514,19 +526,67 @@ def create_app(config=None, store=None, workflow=None, notifier=None, engine=Non
         patient = _patient_or_404(patient_id)
         return {"ok": True, **_patient_view(patient)}
 
+    @app.get("/api/patients/{patient_id}/consent")
+    def get_consent(patient_id: str):
+        return {"ok": True, **consent.status(_patient_or_404(patient_id))}
+
+    @app.get("/api/patients/{patient_id}/consent/receipts")
+    def get_consent_receipts(patient_id: str):
+        return {"ok": True, "receipts": consent.records(_patient_or_404(patient_id))}
+
+    @app.post("/api/patients/{patient_id}/consent")
+    def sign_consent(patient_id: str, payload: dict = Body(default={})):
+        with _patient_lock(patient_id):
+            patient = _patient_or_404(patient_id)
+            receipt = consent.sign(patient, payload)
+            return {"ok": True, "receipt": receipt, "consent": consent.status(patient)}
+
+    @app.post("/api/patients/{patient_id}/consent/withdraw")
+    def withdraw_consent(patient_id: str, payload: dict = Body(default={})):
+        with _patient_lock(patient_id):
+            patient = _patient_or_404(patient_id)
+            receipt = consent.withdraw(patient, payload)
+            return {"ok": True, "receipt": receipt, "consent": consent.status(patient)}
+
     @app.post("/api/patients/{patient_id}/begin")
     def begin_step(patient_id: str, payload: dict = Body(default={})):
         with _patient_lock(patient_id):
             patient = _patient_or_404(patient_id)
             _require_current(patient_id, patient, payload.get("station_id"))
+            current = engine.current_step(patient)
+            if current and current.id not in ('intake', 'consent'):
+                consent.require(patient)
             updated = engine.begin_step(patient_id) or patient
             return {"ok": True, **_patient_view(updated)}
+
+    def assessment_result(patient, payload):
+        current = engine.current_step(patient)
+        if not workflow.get_station('bertec_balance') or not current or current.app not in ('inbody','runtrack','bertec'):
+            return None
+        results = payload.get('results') if isinstance(payload.get('results'), dict) else {}
+        session = str(payload.get('session_id') or results.get('session_id') or results.get('result_id') or '')
+        if payload.get('app') and payload['app'] != current.app:
+            raise ApiError(400, 'Result source does not match the current assessment step')
+        rows = [row for row in mc_ingest.read(subject_id=patient['id'])
+                if row.get('source') == current.app and row.get('session_id') == session]
+        if not session or not rows:
+            raise ApiError(400, 'Receive/sync this assessment into the patient chart first, then enter its session/result id')
+        if any((row.get('provenance') or {}).get('visit_id') != consent.visit_id(patient) for row in rows):
+            raise ApiError(400, 'Result visit is missing or different; confirm the patient/visit binding before advancing')
+        return {'app': current.app, 'id': session}
 
     @app.post("/api/patients/{patient_id}/complete")
     def complete_step(patient_id: str, payload: dict = Body(default={})):
         with _patient_lock(patient_id):
             patient = _patient_or_404(patient_id)
             _require_current(patient_id, patient, payload.get("station_id"))
+            current = engine.current_step(patient)
+            # Intake review may precede the separate consent station; measurements may not.
+            if not (current and current.id == 'intake' and workflow.get_station('consent')):
+                consent.require(patient)
+            linked = assessment_result(patient, payload)
+            if linked:
+                store.link_session(patient_id, linked['app'], linked['id'])
             notes = payload.get("notes")
             results = payload.get("results")
             updated = engine.complete_step(
@@ -541,6 +601,10 @@ def create_app(config=None, store=None, workflow=None, notifier=None, engine=Non
         with _patient_lock(patient_id):
             patient = _patient_or_404(patient_id)
             _require_current(patient_id, patient, payload.get("station_id"))
+            consent.require(patient)
+            current = engine.current_step(patient)
+            if consent.required and current and current.id in ("intake", "consent"):
+                raise ApiError(400, "Intake and consent cannot be skipped; review and complete this step")
             reason = payload.get("reason")
             updated = engine.skip_step(patient_id, reason if isinstance(reason, str) else "")
             if updated is None:
@@ -563,6 +627,7 @@ def create_app(config=None, store=None, workflow=None, notifier=None, engine=Non
     def add_measurement(patient_id: str, payload: dict = Body(default={})):
         with _patient_lock(patient_id):
             patient = _patient_or_404(patient_id)
+            consent.require(patient)
             metric = str(payload.get("metric") or "").strip()
             if not metric:
                 raise ApiError(400, "metric is required")
@@ -580,13 +645,17 @@ def create_app(config=None, store=None, workflow=None, notifier=None, engine=Non
     def link_session(patient_id: str, payload: dict = Body(default={})):
         """Link a lab-app session id and close the current step with it."""
         with _patient_lock(patient_id):
-            _patient_or_404(patient_id)
+            consent.require(_patient_or_404(patient_id))
             app_name = str(payload.get("app") or "").strip()
             session_id = payload.get("session_id")
             if not app_name:
                 raise ApiError(400, "app is required")
             if session_id is None or str(session_id) == "":
                 raise ApiError(400, "session_id is required")
+            current = engine.current_step(_patient_or_404(patient_id))
+            if consent.required and current and current.id in ('intake', 'consent'):
+                raise ApiError(400, 'Review and complete intake/consent before linking assessment sessions')
+            assessment_result(_patient_or_404(patient_id), payload)
             updated = store.link_session(patient_id, app_name, session_id)
 
             step_completed = False
@@ -633,6 +702,7 @@ def create_app(config=None, store=None, workflow=None, notifier=None, engine=Non
             "instruction": engine.next_instruction(patient),
             "current": _current_payload(patient),
             "progress": engine.progress(patient),
+            "consent": consent.status(patient),
         }
 
     return app

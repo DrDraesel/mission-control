@@ -134,7 +134,8 @@ class PatientStore:
         name = str(name or "").strip()
         if not name:
             raise ValueError("patient name is required")
-        patient = {"id": self._new_id(name), "name": name}
+        patient = {"id": self._new_id(name), "name": name,
+                   "visit_id": "visit-" + secrets.token_hex(16)}
         if dob:
             patient["dob"] = str(dob)
         if contact:

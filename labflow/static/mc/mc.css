@@ -306,3 +306,10 @@
   .mc-table td.sources-cell { min-width: 140px; }
   .health-stamp { margin-left: 0; width: 100%; }
 }
+
+/* Patient visit and electronic consent */
+#consent-dialog { width: min(760px, 90vw); max-height: 90vh; overflow: auto; border: 1px solid var(--line); border-radius: var(--r-lg); padding: var(--s-5); background: var(--surface); color: var(--ink); }
+#consent-dialog::backdrop { background: rgb(0 0 0 / .4); }
+.consent-text { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; max-height: 45vh; overflow: auto; padding: var(--s-3); background: var(--surface-3); }
+#consent-form .field { display: grid; gap: var(--s-2); }
+.pad { padding: var(--s-5); }

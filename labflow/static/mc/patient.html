@@ -64,6 +64,25 @@
 
     <div id="page-notice" class="notice-stack" role="status"></div>
 
+    <section class="card" aria-labelledby="visit-title">
+      <header><h2 id="visit-title">Visit readiness &amp; next step</h2></header>
+      <div class="pad stack"><p id="visit-next" role="status">Loading visit…</p><p id="consent-state" role="status"></p>
+        <div class="mc-tools"><button id="show-consent" class="btn" type="button">Review &amp; sign consent</button><button id="complete-intake" class="btn primary" type="button" disabled>Confirm intake reviewed &amp; continue</button><a id="guided-visit" class="btn" href="/">Open guided visit</a><a id="consent-receipts" class="btn" href="#" download="consent-receipts.json">Download consent history</a><button id="withdraw-consent" class="btn" type="button" hidden>Record withdrawal</button></div>
+        <details><summary>Incoming intake information</summary><pre id="visit-intake" class="consent-text"></pre></details>
+        <ol id="visit-steps"></ol>
+      </div>
+    </section>
+    <dialog id="consent-dialog" aria-labelledby="consent-title"><form id="consent-form" class="stack">
+      <h2 id="consent-title">Digital consent</h2><p id="consent-patient"></p><p id="consent-version" class="muted"></p>
+      <pre id="consent-document" class="consent-text"></pre>
+      <label class="field">Signing as<select id="signer-role"><option value="patient">Patient</option><option value="authorized_representative">Authorized representative</option></select></label>
+      <label class="field">Signer’s full name<input id="signer-name" required maxlength="120" autocomplete="off"></label>
+      <label class="field">Representative relationship / authority (if applicable)<input id="signer-relationship" maxlength="200"></label>
+      <label><input id="consent-agree" type="checkbox" required> I have read the document above and agree to its terms.</label>
+      <label><input id="consent-electronic" type="checkbox" required> I intend my typed name to be my electronic signature on this document.</label>
+      <p id="consent-message" role="alert"></p><div class="mc-tools"><button id="sign-consent" class="btn primary" type="submit">Sign &amp; save consent</button><button id="close-consent" class="btn" type="button">Close</button></div>
+    </form></dialog>
+
     <section class="card" aria-labelledby="timeline-title">
       <header>
         <h2 id="timeline-title">Timeline</h2>

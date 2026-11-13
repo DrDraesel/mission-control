@@ -158,11 +158,20 @@
     $('#progress-fill').style.width = Math.max(0, Math.min(100, percent)) + '%';
     $('#progress-text').textContent = done + ' / ' + total + ' stations complete';
 
+    var consent = view.consent;
+    var consentLink = $('#visit-consent-link');
+    if (!consentLink) { consentLink = el('a', 'btn', 'Open patient chart & digital consent'); consentLink.id = 'visit-consent-link'; $('#pv-meta').after(consentLink); }
+    consentLink.href = '/mc/patient/' + encodeURIComponent(patient.id);
     renderNext(view);
     renderStations(view);
     renderCapture(view);
     renderMeasurements(patient);
     renderProbes();
+    var separateConsent = view.steps.some(function (step) { return step.id === 'consent'; });
+    var blocked = consent && !consent.can_proceed && !(separateConsent && view.current && view.current.id === 'intake');
+    $('#capture-done').disabled = !!blocked;
+    $('#capture-skip').disabled = !!blocked || (consent && consent.required && view.current && ['intake','consent'].includes(view.current.id));
+    if (blocked) $('#next-instruction').textContent = 'Complete digital consent in the patient chart before starting the visit.';
     refreshListEntry();
   }
 
@@ -509,6 +518,7 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     wire();
-    loadPatients();
+    var requested = new URLSearchParams(location.search).get('patient');
+    loadPatients(requested || null);
   });
 })();

@@ -62,6 +62,8 @@ class RecordingNotifier(Notifier):
 
 
 class WebLayerTestCase(unittest.TestCase):
+    # Frozen workflow regressions run in explicit legacy mode; consent gates
+    # and default-on behavior are exercised in test_consent.py.
     """One app + tmp store + recording notifier per test."""
 
     def setUp(self):
@@ -71,7 +73,7 @@ class WebLayerTestCase(unittest.TestCase):
         self.store = store
         self.notifier = RecordingNotifier()
         self.app = app_module.create_app(
-            config={}, store=store, workflow=DEFAULT_WORKFLOW, notifier=self.notifier
+            config={"consent_required": False}, store=store, workflow=DEFAULT_WORKFLOW, notifier=self.notifier
         )
         self.client = TestClient(self.app)
 
@@ -343,7 +345,7 @@ class PatientLifecycleTests(WebLayerTestCase):
                 return inner.progress(patient)
 
         flaky = FlakyEngine()
-        app = app_module.create_app(config={}, store=self.store, workflow=DEFAULT_WORKFLOW,
+        app = app_module.create_app(config={"consent_required": False}, store=self.store, workflow=DEFAULT_WORKFLOW,
                                     notifier=NullNotifier(), engine=flaky)
         client = TestClient(app)
         response = client.post("/api/patients", json={"name": "Flaky File"})
