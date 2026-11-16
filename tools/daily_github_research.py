@@ -168,8 +168,16 @@ TOPIC_QUERIES = [
     # rembg / BiRefNet / U2-Net are ALL absent (the matting probe covered matting
     # models, never segmentation), and nerfstudio / gsplat / Brush are absent too
     # (only LichtFeld-Studio and supersplat are ledgered).
-    ("image-segmentation", "image segmentation stars:>1000"),
+    # 11-16 rotation: BOTH new probes paid — `image-segmentation` 49 total / 11 new
+    # (ultralytics 63.5k*, BiRefNet 4.4k* MIT, Mask2Former, UNet family, albumentations)
+    # and `gaussian-splatting` 141 total / 10 new (graphdeco 24.5k*, awesome-3DGS 9k*,
+    # nerfstudio/gsplat 5.9k* Apache, sparkjsdev/spark 3.9k* MIT = three.js splat renderer).
+    # 11-17: tighten segmentation with a pushed floor to drop the 2017-19 research tier,
+    # and add the SAM-family phrase probe — `image segmentation` sorted by stars hides
+    # SAM 2 / SAM 3 / FastSAM / MobileSAM behind bigger general-purpose repos.
+    ("image-segmentation", "image segmentation stars:>1000 pushed:>2026-01-01"),
     ("gaussian-splatting", "gaussian splatting stars:>300"),
+    ("segment-anything", "segment anything stars:>300"),
 ]
 
 # freshness: brand-new projects getting traction (rotated windows)

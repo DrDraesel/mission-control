@@ -36,6 +36,12 @@ for raw_file in raw_files:
 
 # web-verified repos found outside the API sweep (add manually when needed)
 EXTRA = {
+    # 2026-11-16 web finds (API-verified today; stars @ verify time)
+    "leodavincs/kurgu": 13,       # 13* MIT created 11-07 pushed 11-10, Python: agent-first NLE - Claude Code/Codex write project.json, browser editor at :8765, `kurgu-render` -> mp4, MCP server, uv+static ffmpeg on Windows, no admin
+    "dughogan/DUGCO_Tools": 9,    # 9* MIT created 11-13: VFX finishing pack for ComfyUI - Pass Viewer (multi-layer EXR), Multi-Pass EXR Exporter, Film Finish (500T/250D stock: film curve, halation, grain, gate weave), Plate Relight (CPU, no models), Track Path To Shot (CoTracker3 = CC BY-NC), Comfy Workflow Tracker = licence audit; ships AGENTS.md + install checker
+    "jplenio/Plenio-Music-Production-System": 123,  # 123* Apache-2.0 created 09-25 pushed 11-14, Python: ComfyUI song studio (idea -> mastered track + cover + timed lyrics + sheet music, YuE2 / MiniMax Music 3), Song API v2 + MCP server, Setup tab plans/verifies model files per GPU; needs ComfyUI >= 0.37 (local 0.25.0 -> gated)
+    "PedroMarinhoDev/ComfyUI-ReCaVSR": 81,  # 81* GPL-3.0 created 11-10: ReCaVSR one-step 4x video super-resolution native in ComfyUI (Wan2.2 TI2V-5B base), block-by-block streaming so long clips cost time+disk not VRAM, bf16 + int8 ConvRot, 8 GB class
+    "drmhse/nano-edge-tts": 0,    # HF model (not GitHub) Apache-2.0 pub 11-11: 1.75M-param harmonic-plus-noise decoder that replaces Kokoro-82M's 53.3M waveform decoder -> 33x faster decode / 11x faster phonemes->audio on ONE CPU thread (RTF 0.0127 vs 0.1411), peak RAM 0.75 GB, same 28 voices; kokoro==0.9.4 pip needs Python <3.13
     # 2026-11-12 web finds (API-verified today; stars @ verify time)
     "Comfy-Org/ComfyUI": 146470,  # 146.5k* GPL-3.0 pushed today: the CORE ComfyUI repo had never been in the ledger (39 plugin repos were); v0.45.0 (11-10) ships Windows portable nvidia 1,975.5 MB + UltraTex/RelayVSR/H3-Image/WeVisOne-VL in core = the 29-run blocker
     "ifm-ai/PAN2": 55,            # 55* Apache-2.0 pushed 11-05: MBZUAI IFM 29B MMDiT world model, text(+optional image) -> up to 20 s at 704x1248@24fps, conceptual-reasoner LLM writes a time-grounded state; Diffusers + vLLM support; NO territory clause (unlike H3)
