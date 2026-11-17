@@ -177,7 +177,18 @@ TOPIC_QUERIES = [
     # SAM 2 / SAM 3 / FastSAM / MobileSAM behind bigger general-purpose repos.
     ("image-segmentation", "image segmentation stars:>1000 pushed:>2026-01-01"),
     ("gaussian-splatting", "gaussian splatting stars:>300"),
-    ("segment-anything", "segment anything stars:>300"),
+    # 11-17 rotation: `segment-anything` = 12 of 12 new on debut (the whole SAM family:
+    # 55.1k* SAM, 20.2k* SAM2, 12.3k* SAM3, 17.8k* Grounded-SAM, FastSAM, samurai, Track-Anything,
+    # MedSAM, sam-hq, sam-audio) -> fully mined in one run, retire.
+    # REPLACED BY `screen-studio`: the demo-video lane is 27 repos under that TOPIC and
+    # ~46k* across Recordly/OpenScreen/capptivo/agent-screenplay - the 10-27 probe
+    # ('screen recorder demo video') failed on vocabulary, not on the lane. Topic names
+    # are the correct query form for a software CATEGORY.
+    ("screen-studio", "topic:screen-studio"),
+    # NEW `medical-imaging`: the segmentation sweep surfaced a whole clinical tier
+    # (TotalSegmentator 3.2k*, MedSAM 4.4k*, 3D Slicer 2.7k*, ITK 1.7k*) that no query
+    # names - and the user builds clinical/biomechanics apps, so this is a standing lane.
+    ("medical-imaging", "medical imaging stars:>500 pushed:>2026-01-01"),
 ]
 
 # freshness: brand-new projects getting traction (rotated windows)
