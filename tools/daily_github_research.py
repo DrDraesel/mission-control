@@ -93,7 +93,8 @@ TOPIC_QUERIES = [
     ("short-drama", "ai short drama"),
     ("programmatic-video", "programmatic video"),
     ("code-rendered-film", "agent film skill"),
-    ("figma-alt", "figma alternative"),
+    # figma-alt retired 11-19 (see rotation note at the tts-voice/webgl-3d block)
+
     ("ugc-video", "ai ugc video"),
     ("reels-automation", "instagram reels automation"),
     ("3d-web-design", "3d web design"),
@@ -184,7 +185,16 @@ TOPIC_QUERIES = [
     # ~46k* across Recordly/OpenScreen/capptivo/agent-screenplay - the 10-27 probe
     # ('screen recorder demo video') failed on vocabulary, not on the lane. Topic names
     # are the correct query form for a software CATEGORY.
-    ("screen-studio", "topic:screen-studio"),
+    # 11-19 rotation: `screen-studio` retired after one run — its head (Recordly/OpenScreen/
+    # capptivo/agent-screenplay) was already ledgered and its NEW tail was exporters for the
+    # paid macOS Screen Studio. `figma-alt` retired too (phrase probe, flat since 10-21; the
+    # design lane is covered by design.md/astryx/takumi/penpot/graphite).
+    # New probes, both ledger-checked first: TTS is the VOICE half of the faceless pipeline
+    # (whisper/faster-whisper/piper/kokoro absent or thin; F5-TTS/GPT-SoVITS/ChatTTS/IndexTTS
+    # never probed) and topic:webgl is the correct category form for the 3D-WEB lane
+    # (react-three-fiber, model-viewer, fabric.js, deck.gl, d3 all absent from the ledger).
+    ("tts-voice", "text to speech stars:>2000"),
+    ("webgl-3d", "topic:webgl"),
     # NEW `medical-imaging`: the segmentation sweep surfaced a whole clinical tier
     # (TotalSegmentator 3.2k*, MedSAM 4.4k*, 3D Slicer 2.7k*, ITK 1.7k*) that no query
     # names - and the user builds clinical/biomechanics apps, so this is a standing lane.
