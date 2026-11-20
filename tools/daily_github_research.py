@@ -193,8 +193,17 @@ TOPIC_QUERIES = [
     # (whisper/faster-whisper/piper/kokoro absent or thin; F5-TTS/GPT-SoVITS/ChatTTS/IndexTTS
     # never probed) and topic:webgl is the correct category form for the 3D-WEB lane
     # (react-three-fiber, model-viewer, fabric.js, deck.gl, d3 all absent from the ledger).
-    ("tts-voice", "text to speech stars:>2000"),
-    ("webgl-3d", "topic:webgl"),
+    # 11-20 rotation: `tts-voice` and `webgl-3d` PARKED — both returned 0 new on
+    # debut because their top-12 was already 100% ledgered (coverage confirmed, not a
+    # dead lane). Per the 11-19 lesson, the sweep adds TOPIC forms with a known head,
+    # never more star-floored phrase vocabulary:
+    #   topic:design-tools = PAID on debut (12 real gaps, 41,968* -> 1,940*: plasmic,
+    #   VisBug, style-dictionary, @shadcn/lint, pattern-craft, animockup, typeui...)
+    #   topic:faceless = 7 new / 0 usable (1 licence-crack spam, 1 dormant API wrapper,
+    #   1 unlicensed influencer pipeline, 4 off-topic) -> STAGED OUT 11-21 for
+    #   `topic:video-editing`, the sibling category form with a head the ledger knows.
+    ("design-tools-topic", "topic:design-tools"),
+    ("video-editing-topic", "topic:video-editing"),
     # NEW `medical-imaging`: the segmentation sweep surfaced a whole clinical tier
     # (TotalSegmentator 3.2k*, MedSAM 4.4k*, 3D Slicer 2.7k*, ITK 1.7k*) that no query
     # names - and the user builds clinical/biomechanics apps, so this is a standing lane.

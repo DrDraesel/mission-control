@@ -11,28 +11,25 @@ today = date.today().isoformat()
 HEADERS = {"User-Agent": "mission-control-research/1.0", "Accept": "application/vnd.github+json"}
 
 REPOS = [
-    # --- 10-29 sweep NEW (category-probe debut: image-editor / whiteboard / graphics-engine / animation-software) ---
-    "toeverything/AFFiNE",
-    "tldraw/tldraw",
-    "plait-board/drawnix",
-    "Agents365-ai/drawio-skill",
-    "geeklee/srt-whiteboard-animation",
-    "CyberTimon/RapidRAW",
-    "Orama-Interactive/Pixelorama",
-    "Orillusion/orillusion",
-    "leaferjs/leafer-ui",
-    "NomaDamas/CozyClay",
-    "tahoma2d/tahoma2d",
-    "MaurycyLiebner/enve",
-    "photopea/photopea",
-    "ikuaitu/vue-fabric-editor",
-    # --- 10-29 momentum refresh ---
+    # --- 11-20 sweep NEW (topic:design-tools debut — the design/web-asset category gap) ---
+    "plasmicapp/plasmic",
+    "GoogleChromeLabs/ProjectVisBug",
+    "style-dictionary/style-dictionary",
+    "BuilderIO/figma-html",
+    "megh-bari/pattern-craft",
+    "alyssaxuu/animockup",
+    "bergside/typeui",
+    "shadcn-ui/lint",
+    "tachyons-css/tachyons",
+    "goabstract/Awesome-Design-Tools",
+    # --- 11-20 web-lane finds (faceless / voiceover lane) ---
+    "yanghhu/ai-voiceover-studio",
+    "jutsuhq/content-factory",
+    "Jossifresben/flowshape",
+    "jacky-xbb/faceless-video-api",
+    # --- 11-20 momentum refresh ---
     "heygen-com/hyperframes",
     "jub0t/Concat",
-    "pbakaus/impeccable",
-    "tt-a1i/archify",
-    "calesthio/OpenMontage",
-    "Leonxlnx/taste-skill",
 ]
 
 meta = {}

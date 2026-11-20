@@ -13,7 +13,7 @@ repos = ledger.get("repos", {})
 by_lower = {k.lower(): k for k in repos}
 
 SPAM = ("dictat", "dictatorship", "cirosantilli", "scaling-octo-guide", "this-analysis-terminated",
-        "setup-guide", "win-guide", "workflow-guide", "shotcut-download")
+        "setup-guide", "win-guide", "workflow-guide", "shotcut-download", "pro-license")
 new_names = []
 raw_files = [Path(a) for a in sys.argv[1:]] if len(sys.argv) > 1 else [D / f"{today}-github.json"]
 for raw_file in raw_files:
@@ -36,6 +36,11 @@ for raw_file in raw_files:
 
 # web-verified repos found outside the API sweep (add manually when needed)
 EXTRA = {
+    # 2026-11-20 web-lane finds (API-verified today; stars @ verify time)
+    "yanghhu/ai-voiceover-studio": 0,  # 0* MIT created 11-07 pushed 11-07, Python 3.9+: *** ON-MACHINE (PyPI 0.3.0, uv --with "ai-voiceover-studio[edge]", 14 pkgs / 0.3 s): `voiceover doctor` OK (ffmpeg 9.0.2 libass+xfade, edge engine free, no key needed); examples/demo.en.md -> 39.3 s 1920x1080 7 shots 42.4 MB; custom 2-shot script --vertical -> 1080x1920 9.0 s in 22 s wall 8.4 MB; offline --dry-run 40.6 s 9:16 in 23 s; captions word-highlighted + progress bar; faceless-video CLI/library: Markdown script (+ ![](b-roll) per paragraph) -> edge-tts 300+ voices/70+ langs (no key) or OpenAI/Miragea clone, SRT + word-level caption pages, ASS styles tiktok/bold/clean/minimal/box, Ken Burns + 5 transitions + cinematic grade + hook card + ducked music in ONE ffmpeg graph; commands say/script/voices/video/doctor/task; --size/--vertical/--fps/--fit/--subtitles burn|sidecar|none/--subtitle-source timing|recognize/--images folder/--font/--json; exit codes 0/1/2, drop-in agent skill; CAVEAT no CRF knob (yuvj420p ~7-8.6 Mbps = 42 MB for 39 s) -> re-encode for delivery
+    "Jossifresben/flowshape": 2,       # 2* MIT created 08-28 pushed 10-27, TypeScript: browser SVG pattern generator - 40 deterministic generators (Voronoi mesh, Truchet tiling, flow field, isometric voxel), print-ready SVG/PNG at any paper size, poster composer, audio-reactive 16:9/9:16/1:1 stage that records video with the audio; no backend/account; an asset source for social backgrounds, not a pipeline (browser-only)
+    "bergside/typeui": 2264,           # 2,264* MIT (API NOASSERTION - licence lives in LICENSE.md) created 03-03 pushed 10-22: AI-first UI design-skill/prompt library + MCP server behind typeui.sh, feeding design systems, UI prompts and layout-variation guidance to Codex/Claude Code/Cursor; content repo for a hosted platform, not an offline renderer
+
     # 2026-11-19 web finds (API-verified today; stars @ verify time)
     "zhouxiaoka/autoclip": 10945,   # 10,945* MIT created 2025-07-08 pushed 11-19, Python/React/Tauri: OpusClip-class clipper that runs LOCALLY - long podcast/interview/course -> up to 10 scored clips PER PLATFORM (Douyin/Xiaohongshu/TikTok/Reels/Shorts/YouTube/Bilibili) with cover, title, description, hashtags and a ZIP publish pack; analysis model is your choice (Ollama/LM Studio local, no key, or any OpenAI-compatible), subtitles from author captions, local Whisper/SenseVoice, or cloud ASR; CLI/MCP (Python 3.10+, ffmpeg on PATH) + DESKTOP: Windows x64 x64-setup.exe 204.2 MB (bundles Python+FFmpeg), macOS arm64 dmg; v1.5.8 (11-02); MIT
     "google-labs-code/stitch-skills": 10595,  # 10,595* Apache-2.0 created 2026-01-16 pushed 11-18, TypeScript: Google Stitch agent skills/plugins (Agent Skills standard) - stitch-design / stitch-build / stitch-utilities for Codex, Claude Code, Cursor, Antigravity, Gemini CLI, OpenCode; drives the Stitch MCP server (stitch.withgoogle.com) = Google's UI-design generator; cloud account required, so it is the design->code half, not an offline renderer
