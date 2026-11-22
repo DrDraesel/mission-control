@@ -202,7 +202,11 @@ TOPIC_QUERIES = [
     #   topic:faceless = 7 new / 0 usable (1 licence-crack spam, 1 dormant API wrapper,
     #   1 unlicensed influencer pipeline, 4 off-topic) -> STAGED OUT 11-21 for
     #   `topic:video-editing`, the sibling category form with a head the ledger knows.
-    ("design-tools-topic", "topic:design-tools"),
+    # 11-22 rotation: `design-tools` out (mined 11-20: 12 real gaps in one run);
+    # `topic:content-repurposing` in — the sibling category form for the
+    # long-form → clips lane (OpusClip/autoclip vocabulary), where the ledger's
+    # known heads are autoclip 12.6k* and shortsflow-class tools.
+    ("content-repurposing-topic", "topic:content-repurposing"),
     ("video-editing-topic", "topic:video-editing"),
     # NEW `medical-imaging`: the segmentation sweep surfaced a whole clinical tier
     # (TotalSegmentator 3.2k*, MedSAM 4.4k*, 3D Slicer 2.7k*, ITK 1.7k*) that no query
@@ -214,7 +218,10 @@ TOPIC_QUERIES = [
 FRESH_QUERIES = [
     # 11-01: H3/Pika wave is a licence dead end for the US -> re-target LTX vocabulary
     ("fresh-ltx", 'ltx created:>2026-08-01 stars:>5'),
-    ("fresh-agents", 'video agent created:>2026-08-25 stars:>10'),
+    # 11-22: `fresh-agents` parked (0 new x3 — the phrase matches harnesses, not tools).
+    # Replaced with the TOPIC form of the clip-generator category (20-repo head:
+    # openshorts/hotclip/reelsaw/shortsflow class, per the 11-19 topic survey).
+    ("ai-clip-generator-topic", "topic:ai-clip-generator"),
     ("manim-ecology", 'manim stars:>50 pushed:>2026-09-01'),
 ]
 

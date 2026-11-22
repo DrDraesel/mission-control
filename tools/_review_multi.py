@@ -37,7 +37,7 @@ for f in files:
     print(f"loaded {f.name}: +{len(union) - n0} unique repos (union {len(union)})")
 
 new = [it for it in union.values() if it["full_name"].lower() not in seen]
-SPAM = ("dictat", "dictatorship", "cirosantilli", "setup-guide", "win-guide", "workflow-guide", "shotcut-download", "pro-license")
+SPAM = ("dictat", "dictatorship", "cirosantilli", "setup-guide", "win-guide", "workflow-guide", "shotcut-download", "pro-license", "kling-desktop")
 new = [it for it in new if not any(s in it["full_name"].lower() for s in SPAM)]
 new.sort(key=lambda x: -(x["stars"] or 0))
 out_path = D / f"{today}-new-candidates.json"
