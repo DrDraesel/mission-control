@@ -206,8 +206,14 @@ TOPIC_QUERIES = [
     # `topic:content-repurposing` in — the sibling category form for the
     # long-form → clips lane (OpusClip/autoclip vocabulary), where the ledger's
     # known heads are autoclip 12.6k* and shortsflow-class tools.
+    # 11-23 rotation (per 11-22 plan): keep `content-repurposing-topic` one more run
+    # (head real: autoclip 13.2k, article2media 533*); `video-editing-topic` retired
+    # after 2nd run = 0 new (mined) -> replaced by topic:motion-design, the
+    # motion-graphics CATEGORY form where the ledger's head is thin;
+    # `ai-clip-generator-topic` parked (6 raw-new / 0 usable, installer impersonation)
+    # -> replaced by topic:explainer-video (video-automation sibling).
     ("content-repurposing-topic", "topic:content-repurposing"),
-    ("video-editing-topic", "topic:video-editing"),
+    ("motion-design-topic", "topic:motion-design"),
     # NEW `medical-imaging`: the segmentation sweep surfaced a whole clinical tier
     # (TotalSegmentator 3.2k*, MedSAM 4.4k*, 3D Slicer 2.7k*, ITK 1.7k*) that no query
     # names - and the user builds clinical/biomechanics apps, so this is a standing lane.
@@ -221,7 +227,8 @@ FRESH_QUERIES = [
     # 11-22: `fresh-agents` parked (0 new x3 — the phrase matches harnesses, not tools).
     # Replaced with the TOPIC form of the clip-generator category (20-repo head:
     # openshorts/hotclip/reelsaw/shortsflow class, per the 11-19 topic survey).
-    ("ai-clip-generator-topic", "topic:ai-clip-generator"),
+    # 11-23: ai-clip-generator-topic parked (0 usable) -> topic:explainer-video
+    ("explainer-video-topic", "topic:explainer-video"),
     ("manim-ecology", 'manim stars:>50 pushed:>2026-09-01'),
 ]
 
