@@ -11,25 +11,25 @@ today = date.today().isoformat()
 HEADERS = {"User-Agent": "mission-control-research/1.0", "Accept": "application/vnd.github+json"}
 
 REPOS = [
-    # --- 11-20 sweep NEW (topic:design-tools debut — the design/web-asset category gap) ---
-    "plasmicapp/plasmic",
-    "GoogleChromeLabs/ProjectVisBug",
-    "style-dictionary/style-dictionary",
-    "BuilderIO/figma-html",
-    "megh-bari/pattern-craft",
-    "alyssaxuu/animockup",
-    "bergside/typeui",
-    "shadcn-ui/lint",
-    "tachyons-css/tachyons",
-    "goabstract/Awesome-Design-Tools",
-    # --- 11-20 web-lane finds (faceless / voiceover lane) ---
-    "yanghhu/ai-voiceover-studio",
-    "jutsuhq/content-factory",
-    "Jossifresben/flowshape",
-    "jacky-xbb/faceless-video-api",
-    # --- 11-20 momentum refresh ---
+    # --- 11-24 curated index (ZanePoe projects.md) + web lane ---
+    "OpenMontageInc/OpenMontage",
+    "digitalsamba/claude-code-video-toolkit",
+    "MartinDelophy/ai-video-editor",
+    "lcy362/agnes-video-generator",
+    "zhuyansen/awesome-claude-video-skills",
+    "louisedesadeleer/b-roll-finder",
+    "edigeh/broll-mcp",
+    "win4r/video-director",
+    "nutllwhy/hyperframes-motion-library",
+    "social-media-skills/skills",
+    "liyupi/ai-promo-video-maker",
+    "FireRedTeam/FireRed-OpenStoryline",
+    "kaomei/hand-drawn-video-prompts",
+    "juntaosun/ComeCut",
+    "isroil01/premation",
+    # --- 11-24 momentum refresh ---
     "heygen-com/hyperframes",
-    "jub0t/Concat",
+    "zhouxiaoka/autoclip",
 ]
 
 meta = {}

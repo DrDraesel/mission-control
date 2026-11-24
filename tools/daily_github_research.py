@@ -212,7 +212,13 @@ TOPIC_QUERIES = [
     # motion-graphics CATEGORY form where the ledger's head is thin;
     # `ai-clip-generator-topic` parked (6 raw-new / 0 usable, installer impersonation)
     # -> replaced by topic:explainer-video (video-automation sibling).
-    ("content-repurposing-topic", "topic:content-repurposing"),
+    # 11-24 rotation (per 11-23 plan): `content-repurposing-topic` out (0 new on 2nd
+    # run) -> `topic:b-roll`, the footage-sourcing category form for the faceless lane
+    # (head checked: 59 repos, hand-drawn-video-prompts 329*, b-roll-finder 156*,
+    # broll-mcp 55* ABSENT, while `topic:video-translation`'s head is 100% ledgered —
+    # VideoLingo/OpenCreator/YouDub all present). Keep motion-design + explainer-video
+    # for their 2nd run.
+    ("b-roll-topic", "topic:b-roll"),
     ("motion-design-topic", "topic:motion-design"),
     # NEW `medical-imaging`: the segmentation sweep surfaced a whole clinical tier
     # (TotalSegmentator 3.2k*, MedSAM 4.4k*, 3D Slicer 2.7k*, ITK 1.7k*) that no query
