@@ -11,25 +11,32 @@ today = date.today().isoformat()
 HEADERS = {"User-Agent": "mission-control-research/1.0", "Accept": "application/vnd.github+json"}
 
 REPOS = [
-    # --- 11-24 curated index (ZanePoe projects.md) + web lane ---
-    "OpenMontageInc/OpenMontage",
-    "digitalsamba/claude-code-video-toolkit",
-    "MartinDelophy/ai-video-editor",
-    "lcy362/agnes-video-generator",
-    "zhuyansen/awesome-claude-video-skills",
-    "louisedesadeleer/b-roll-finder",
-    "edigeh/broll-mcp",
-    "win4r/video-director",
-    "nutllwhy/hyperframes-motion-library",
-    "social-media-skills/skills",
-    "liyupi/ai-promo-video-maker",
-    "FireRedTeam/FireRed-OpenStoryline",
-    "kaomei/hand-drawn-video-prompts",
-    "juntaosun/ComeCut",
-    "isroil01/premation",
-    # --- 11-24 momentum refresh ---
+    # --- 11-25 sweep-new (topic:product-video / kinetic-typography / fresh-month-movers) ---
+    "haziqahmedqasmi/PeakCut",
+    "arla6ka/design.how",
+    "hridaya423/silkreel",
+    "jitOffice/jit-motion",
+    "display-dev/product-film",
+    "EGSECDA/vocaloid-style-mv-pipeline",
+    # --- 11-25 web/curated lane ---
+    "Hao0321/Editkin",
+    "Hao0321/video-autopilot-kit",
+    "kleZ799/clipmint",
+    "frankShan001/CutVoke",
+    "MemeCalculate/moyin-creator",
+    "NarratorAI-Studio/narrator-ai-cli-skill",
+    "vrgamegirl19/comfyui-vrgamedevgirl",
+    "emircesur/Linnea",
+    "AnIntellectualBeing/GTA-Auto-Clipper",
+    # --- 11-25 momentum refresh ---
     "heygen-com/hyperframes",
     "zhouxiaoka/autoclip",
+    "jub0t/Concat",
+    "OpenMontageInc/OpenMontage",
+    "Vincentwei1021/video-shotcraft",
+    "nexu-io/openmotion",
+    "KyaniteLabs/kinocut",
+    "edigeh/broll-mcp",
 ]
 
 meta = {}

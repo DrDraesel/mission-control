@@ -213,13 +213,14 @@ TOPIC_QUERIES = [
     # `ai-clip-generator-topic` parked (6 raw-new / 0 usable, installer impersonation)
     # -> replaced by topic:explainer-video (video-automation sibling).
     # 11-24 rotation (per 11-23 plan): `content-repurposing-topic` out (0 new on 2nd
-    # run) -> `topic:b-roll`, the footage-sourcing category form for the faceless lane
-    # (head checked: 59 repos, hand-drawn-video-prompts 329*, b-roll-finder 156*,
-    # broll-mcp 55* ABSENT, while `topic:video-translation`'s head is 100% ledgered —
-    # VideoLingo/OpenCreator/YouDub all present). Keep motion-design + explainer-video
-    # for their 2nd run.
-    ("b-roll-topic", "topic:b-roll"),
-    ("motion-design-topic", "topic:motion-design"),
+    # run) -> `topic:b-roll` (DEBUT: 59 repos, 11 raw-new, 3 usable — broll-mcp,
+    # motion-director, b-roll-finder; mined in one pass).
+    # 11-25 rotation (per 11-24 plan): b-roll + motion-design (0 new 2nd run) +
+    # explainer-video (0 new 2nd run) all OUT. Two direct-mandate TOPIC forms in:
+    #   topic:product-video  = AI video marketing (head video-shotcraft 22,394*)
+    #   topic:kinetic-typography = typography animation (203 repos, video-talkcraft 2,516*)
+    ("product-video-topic", "topic:product-video"),
+    ("kinetic-typography-topic", "topic:kinetic-typography"),
     # NEW `medical-imaging`: the segmentation sweep surfaced a whole clinical tier
     # (TotalSegmentator 3.2k*, MedSAM 4.4k*, 3D Slicer 2.7k*, ITK 1.7k*) that no query
     # names - and the user builds clinical/biomechanics apps, so this is a standing lane.
@@ -234,7 +235,10 @@ FRESH_QUERIES = [
     # Replaced with the TOPIC form of the clip-generator category (20-repo head:
     # openshorts/hotclip/reelsaw/shortsflow class, per the 11-19 topic survey).
     # 11-23: ai-clip-generator-topic parked (0 usable) -> topic:explainer-video
-    ("explainer-video-topic", "topic:explainer-video"),
+    # 11-25: explainer-video parked (0 new on 2nd run) -> a plain "new + already
+    # moving" window: repos created in the last month that already cleared 30 stars.
+    # Catches the agent-video wave early without needing the right vocabulary.
+    ("fresh-month-movers", 'video created:>2026-10-25 stars:>30'),
     ("manim-ecology", 'manim stars:>50 pushed:>2026-09-01'),
 ]
 
