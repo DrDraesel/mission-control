@@ -219,8 +219,15 @@ TOPIC_QUERIES = [
     # explainer-video (0 new 2nd run) all OUT. Two direct-mandate TOPIC forms in:
     #   topic:product-video  = AI video marketing (head video-shotcraft 22,394*)
     #   topic:kinetic-typography = typography animation (203 repos, video-talkcraft 2,516*)
-    ("product-video-topic", "topic:product-video"),
-    ("kinetic-typography-topic", "topic:kinetic-typography"),
+    # 11-26 rotation (per 11-25 plan): product-video + kinetic-typography parked
+    # after their 11-25 debut (each 0 new usable on 2nd look; heads fully ledgered).
+    # Two direct-mandate TOPIC forms in:
+    #   topic:after-effects = the AE-replacement lane (Lumit-class tools that run
+    #     .jsx scripts are invisible to phrase probes)
+    #   topic:screen-recording = demo-video category form (OpenScreen/Recordly
+    #     ledgered; the tail is not)
+    ("after-effects-topic", "topic:after-effects"),
+    ("screen-recording-topic", "topic:screen-recording"),
     # NEW `medical-imaging`: the segmentation sweep surfaced a whole clinical tier
     # (TotalSegmentator 3.2k*, MedSAM 4.4k*, 3D Slicer 2.7k*, ITK 1.7k*) that no query
     # names - and the user builds clinical/biomechanics apps, so this is a standing lane.
