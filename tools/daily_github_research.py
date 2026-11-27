@@ -226,8 +226,16 @@ TOPIC_QUERIES = [
     #     .jsx scripts are invisible to phrase probes)
     #   topic:screen-recording = demo-video category form (OpenScreen/Recordly
     #     ledgered; the tail is not)
-    ("after-effects-topic", "topic:after-effects"),
-    ("screen-recording-topic", "topic:screen-recording"),
+    # 11-27 rotation (per 11-26 plan): both parked — after-effects = 892 repos but its
+    #   head is Lottie PLAYERS + Duik/after-effects-mcp bridges (mined); screen-recording
+    #   = 1,189 repos, 0 Windows-usable (all macOS/Swift). Two ecosystem TOPIC forms in
+    #   per the Remocn finding (the Remotion component registry is a category with a head):
+    #   topic:remotion = the code-video ecosystem (remotion-dev, players, templates,
+    #     component registries — the lane Remocn sits in)
+    #   topic:lottie = the runtime side of AE-authored motion (players/exporters; the
+    #     gap after libpag: what plays PAG/Lottie inside video pipelines)
+    ("remotion-topic", "topic:remotion"),
+    ("lottie-topic", "topic:lottie"),
     # NEW `medical-imaging`: the segmentation sweep surfaced a whole clinical tier
     # (TotalSegmentator 3.2k*, MedSAM 4.4k*, 3D Slicer 2.7k*, ITK 1.7k*) that no query
     # names - and the user builds clinical/biomechanics apps, so this is a standing lane.
