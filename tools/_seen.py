@@ -14,7 +14,7 @@ by_lower = {k.lower(): k for k in repos}
 
 SPAM = ("dictat", "dictatorship", "cirosantilli", "scaling-octo-guide", "this-analysis-terminated",
         "setup-guide", "win-guide", "workflow-guide", "shotcut-download", "pro-license",
-        "kling-desktop")  # 11-22: paid-Kling installer impersonation wave
+        "kling-desktop", "davinci-resolve-studio", "video-suite-ko", "ltx-video-desktop-suite", "windows-video-downloader-gui", "windows-image-viewer", "ffmpeg-video-audio-converter", "catherineramirez19706", "umbradev315", "nocta1554", "quill400", "agnes-video-generator")  # 11-22: paid-Kling installer impersonation wave
 new_names = []
 raw_files = [Path(a) for a in sys.argv[1:]] if len(sys.argv) > 1 else [D / f"{today}-github.json"]
 for raw_file in raw_files:
@@ -37,6 +37,8 @@ for raw_file in raw_files:
 
 # web-verified repos found outside the API sweep (add manually when needed)
 EXTRA = {
+    # 2026-11-28 trending-lane find (API-verified today; stars @ verify time)
+    "HKUDS/CLI-Anything": 67279,  # 67,279* Apache-2.0 created 2026-03-08 pushed 11-20: *** 67k-star ledger gap *** (no query names "agent-native CLI") - generates/marshals CLI harnesses that make GUI+CLI software agent-drivable, plus preview / live-preview / trajectory loops; CLI-Hub registry. MEASURED ON BOX 11-28: PyPI cli-anything-hub 0.4.1 (MIT, py>=3.10, 8 releases) -> `uvx --from cli-anything-hub cli-hub --help` 7 pkgs/1.7 s exit 0; `cli-hub list` = 103 CLIs (79 harness + 24 public) in 35 categories; `cli-hub search video` -> kdenlive (render via melt), shotcut, openscreen, videocaptioner, palmier, generate-veo-video; `cli-hub info blender` -> harness `cli-anything-blender` (needs blender>=4.2), `info kdenlive` -> needs melt. *** CAVEAT: a harness is a wrapper, not the engine - kdenlive needs melt, blender needs Blender; neither app is on this box ***
     # 2026-11-27 curated-index / web-lane finds (API-verified today; stars @ verify time)
     "robbietilton/Editroom": 878,  # 878* MIT (app) + bundled FFmpeg LGPL-2.1+ / Sparkle MIT, created 11-16 pushed TODAY, 428 commits/30d: native Swift video editor for macOS 14+/Apple silicon - realtime 4K without proxies, grading, speed ramps, transitions, loudness-target exports, and natural-language cuts through Claude/ChatGPT/on-device Apple Intelligence; Claude+ChatGPT edit the OPEN project over MCP. *** macOS-ONLY -> excluded for this box *** (reported for the lane map: the "agent speaks to the open project over MCP" pattern is the same one Editkin/CutVoke ship)
     "sirioberati/ai-filmmaking-camera-control-seedance-2-5": 394,  # 394* MIT (code/prompts/pill clips; NOTICE.md excludes the 33 film-distilled curves + faces/voices + branded shots) created 11-07 pushed 11-07 (dormant): the "pill pipeline" - 137 filmmaking camera moves (dolly/crane/orbit/whip-pan/FPV/one-take/bullet-time/glambot) each as a small three.js template; render a grey 3D "pill" clip (people = striped capsules, no body to copy) + prompt -> Seedance 2.5 copies the CAMERA move and invents the people. Node 22.12+, ffmpeg, one Chrome download for Remotion. *** final footage requires PAID Seedance 2.5 via Tein (tein.ai) with your own key -> not a free pipeline *** ; the reusable part here is the camera-move vocabulary + three.js previs engine (same role as motion-prompt's 192 moves)

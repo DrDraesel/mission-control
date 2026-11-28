@@ -234,8 +234,16 @@ TOPIC_QUERIES = [
     #     component registries — the lane Remocn sits in)
     #   topic:lottie = the runtime side of AE-authored motion (players/exporters; the
     #     gap after libpag: what plays PAG/Lottie inside video pipelines)
-    ("remotion-topic", "topic:remotion"),
-    ("lottie-topic", "topic:lottie"),
+    # 11-28 rotation (per 11-27 plan): both parked after mining — remotion head is fully
+    # ledgered, lottie tail is players and the conversion gap was filled by
+    # lottie-converter. NOTE: the 11-27 report proposed topic:design-tools, but that was
+    # already PAID out on 11-20 (12 gaps), so it is not re-run. Two unprobed category
+    # forms in, both direct mandate lanes ("social media assets"):
+    #   topic:captions  = the caption/subtitle RENDERER category (only SubtitleEdit +
+    #     captions.js in the ledger; karaoke/word-level tools are invisible to phrase probes)
+    #   topic:thumbnail = the social-thumbnail generator category (Canva-replacement lane)
+    ("captions-topic", "topic:captions"),
+    ("thumbnail-topic", "topic:thumbnail"),
     # NEW `medical-imaging`: the segmentation sweep surfaced a whole clinical tier
     # (TotalSegmentator 3.2k*, MedSAM 4.4k*, 3D Slicer 2.7k*, ITK 1.7k*) that no query
     # names - and the user builds clinical/biomechanics apps, so this is a standing lane.

@@ -12,7 +12,7 @@ ledger = json.loads((D / "seen-repos.json").read_text(encoding="utf-8"))
 # case-insensitive: GitHub renames can change case only (jub0t/concat -> jub0t/Concat)
 seen = {k.lower(): k for k in ledger["repos"].keys()}
 
-SPAM = ("dictat", "dictatorship", "cirosantilli", "setup-guide", "win-guide", "workflow-guide", "shotcut-download", "pro-license", "kling-desktop")
+SPAM = ("dictat", "dictatorship", "cirosantilli", "setup-guide", "win-guide", "workflow-guide", "shotcut-download", "pro-license", "kling-desktop", "davinci-resolve-studio", "video-suite-ko", "ltx-video-desktop-suite", "windows-video-downloader-gui", "windows-image-viewer", "ffmpeg-video-audio-converter", "catherineramirez19706", "umbradev315", "nocta1554", "quill400", "agnes-video-generator")
 
 new = {}
 for slug, q in raw["queries"].items():

@@ -11,32 +11,37 @@ today = date.today().isoformat()
 HEADERS = {"User-Agent": "mission-control-research/1.0", "Accept": "application/vnd.github+json"}
 
 REPOS = [
-    # --- 11-25 sweep-new (topic:product-video / kinetic-typography / fresh-month-movers) ---
-    "haziqahmedqasmi/PeakCut",
-    "arla6ka/design.how",
-    "hridaya423/silkreel",
-    "jitOffice/jit-motion",
-    "display-dev/product-film",
-    "EGSECDA/vocaloid-style-mv-pipeline",
-    # --- 11-25 web/curated lane ---
-    "Hao0321/Editkin",
-    "Hao0321/video-autopilot-kit",
-    "kleZ799/clipmint",
-    "frankShan001/CutVoke",
-    "MemeCalculate/moyin-creator",
-    "NarratorAI-Studio/narrator-ai-cli-skill",
-    "vrgamegirl19/comfyui-vrgamedevgirl",
-    "emircesur/Linnea",
-    "AnIntellectualBeing/GTA-Auto-Clipper",
-    # --- 11-25 momentum refresh ---
+    # --- 11-28 sweep-new: topic:captions debut (the day's productive lane) ---
+    "jdepoix/youtube-transcript-api",
+    "smacke/ffsubsync",
+    "1c7/Translate-Subtitle-File",
+    "rockbenben/subtitle-translator",
+    "BMSVieira/moovie.js",
+    "amietn/vcsi",
+    "cshum/imagorvideo",
+    "krzemienski/awesome-video",
+    # --- 11-28 sweep-new: suspected impersonation / utility-spam wave (verify before judging) ---
+    "CatherineRamirez19706/ltx-video-desktop-suite",
+    "umbradev315/ffmpeg-video-audio-converter",
+    "nocta1554/windows-video-downloader-gui",
+    "Quill400/windows-image-viewer",
+    "oil-oil/oil-cover",
+    "j-reach/agnes-video-generator",
+    # --- 11-28 verified-on-box + web/trending lane ---
+    "academa-labs/manimgx",
+    "HKUDS/CLI-Anything",
+    "iart-ai/motion-skills",
+    # --- 11-28 momentum refresh ---
     "heygen-com/hyperframes",
+    "OpenMontageInc/OpenMontage",
     "zhouxiaoka/autoclip",
     "jub0t/Concat",
-    "OpenMontageInc/OpenMontage",
     "Vincentwei1021/video-shotcraft",
     "nexu-io/openmotion",
     "KyaniteLabs/kinocut",
-    "edigeh/broll-mcp",
+    "Remocn/remocn",
+    "iamajmeena/neonclipping",
+    "academa-labs/manimgx",
 ]
 
 meta = {}
